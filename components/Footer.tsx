@@ -5,8 +5,8 @@ const productLinks = [
   { href: "#how-it-works", label: "How It Works" },
   { href: "#pricing", label: "Pricing" },
   { href: "#faq", label: "FAQ" },
-  { href: "/login", label: "Login" },
-  { href: "/signup", label: "Sign Up" },
+  { href: "https://app.clientpro.io/login", label: "Login" },
+  { href: "https://app.clientpro.io/register", label: "Sign Up" },
 ];
 
 const companyLinks = [

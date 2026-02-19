@@ -18,7 +18,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "/signup",
+    href: "https://app.clientpro.io/register",
     popular: false,
   },
   {
@@ -34,7 +34,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "/signup",
+    href: "https://app.clientpro.io/register",
     popular: true,
   },
   {
@@ -51,7 +51,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "/signup",
+    href: "https://app.clientpro.io/register",
     popular: false,
   },
   {
@@ -67,7 +67,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "/signup",
+    href: "https://app.clientpro.io/register",
     popular: false,
   },
   {
