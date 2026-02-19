@@ -63,12 +63,12 @@ export default function Navigation() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Link
-            href="/login"
+          <a
+            href="https://app.clientpro.io/login"
             className="text-sm font-medium text-dark hover:text-primary transition-colors"
           >
             Login
-          </Link>
+          </a>
           <a
             href="#pricing"
             className="bg-primary text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl"
@@ -105,13 +105,13 @@ export default function Navigation() {
                   {link.label}
                 </a>
               ))}
-              <Link
-                href="/login"
+              <a
+                href="https://app.clientpro.io/login"
                 onClick={() => setMobileOpen(false)}
                 className="text-xl font-medium text-dark hover:text-primary transition-colors"
               >
                 Login
-              </Link>
+              </a>
               <a
                 href="#pricing"
                 onClick={() => setMobileOpen(false)}
