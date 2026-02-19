@@ -3,11 +3,10 @@
 import { motion } from "framer-motion";
 import {
   MessageSquare,
-  Brain,
   RefreshCw,
   Users,
   BarChart3,
-  Building2,
+  UsersRound,
 } from "lucide-react";
 
 const features = [
@@ -15,38 +14,33 @@ const features = [
     icon: MessageSquare,
     title: "Automated Text Messages",
     description:
-      "Messages sent from your dedicated number. Clients can reply directly. Feels like you, not a robot.",
-  },
-  {
-    icon: Brain,
-    title: "AI Personalization",
-    badge: "Professional+",
-    description:
-      "Every message customized based on their property type, location, and how long they've owned. Not generic templates.",
+      "4-5 personalized texts per year from your number. Each message includes their name, property details, and city. Edit them if you want, or let them send as-is.",
   },
   {
     icon: RefreshCw,
     title: "Repeat Client Tracking",
     description:
-      "See which past clients are approaching typical move timelines. Know when to reach out personally.",
+      "See which past clients are approaching typical move timelines (7-13 years). Know when to reach out personally.",
   },
   {
     icon: Users,
     title: "Referral Management",
     description:
-      "Track who's referring you. Thank them automatically. Never miss a warm lead.",
+      "When a client refers someone, you see it instantly. Track every referral opportunity.",
   },
   {
     icon: BarChart3,
-    title: "Engagement Analytics",
+    title: "Engagement Insights",
+    badge: "Elite+",
     description:
-      "Know who's responding and who needs a personal call. See your pipeline building in real-time.",
+      "See who's responding to your messages and who might need a personal call.",
   },
   {
-    icon: Building2,
-    title: "White-Label for Brokerages",
+    icon: UsersRound,
+    title: "Team Dashboard",
+    badge: "Team+",
     description:
-      "Brand the entire platform as your proprietary tech. Recruit better agents with better tools.",
+      "Managers see all agent activity, message performance, and team-wide referrals.",
   },
 ];
 
@@ -63,7 +57,7 @@ export default function Features() {
           Everything You Need to Stay Connected
         </motion.h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {features.map((feature, i) => (
             <motion.div
               key={i}

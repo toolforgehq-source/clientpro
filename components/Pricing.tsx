@@ -11,8 +11,10 @@ const plans = [
     annual: 470,
     features: [
       "20 clients",
-      "Monthly texts",
-      "Basic templates",
+      "4-5 personalized texts/year",
+      "Messages from your number",
+      "Edit any message before it sends",
+      "Referral tracking",
       "Email support",
     ],
     cta: "Get Started",
@@ -25,11 +27,11 @@ const plans = [
     annual: 1490,
     features: [
       "100 clients",
-      "Bi-weekly texts",
-      "AI personalization",
+      "4-5 personalized texts/year",
+      "Messages from your number",
+      "Edit any message before it sends",
       "Referral tracking",
-      "Advanced analytics",
-      "Priority support",
+      "Email support",
     ],
     cta: "Get Started",
     href: "/signup",
@@ -41,11 +43,12 @@ const plans = [
     annual: 2990,
     features: [
       "500 clients",
-      "Weekly texts",
-      "Everything in Professional+",
-      "White-label",
-      "Custom templates",
-      "Phone support",
+      "4-5 personalized texts/year",
+      "Messages from your number",
+      "Edit any message before it sends",
+      "Referral tracking",
+      "Engagement insights",
+      "Email support",
     ],
     cta: "Get Started",
     href: "/signup",
@@ -61,7 +64,7 @@ const plans = [
       "Everything in Elite+",
       "Team dashboard",
       "Manager oversight",
-      "Dedicated support",
+      "Email support",
     ],
     cta: "Get Started",
     href: "/signup",
@@ -75,10 +78,7 @@ const plans = [
       "Unlimited agents",
       "Unlimited clients",
       "Everything in Team+",
-      "Full white-label",
-      "API access",
-      "Success manager",
-      "Strategy calls",
+      "Dedicated account manager",
     ],
     cta: "Contact Sales",
     href: "mailto:sales@clientpro.io",
@@ -88,16 +88,15 @@ const plans = [
 
 const comparisonFeatures = [
   { name: "Clients", values: ["20", "100", "500", "1,000", "Unlimited"] },
-  { name: "Text Frequency", values: ["Monthly", "Bi-weekly", "Weekly", "Weekly", "Weekly"] },
-  { name: "AI Personalization", values: ["—", "Yes", "Yes", "Yes", "Yes"] },
-  { name: "Referral Tracking", values: ["—", "Yes", "Yes", "Yes", "Yes"] },
-  { name: "Advanced Analytics", values: ["—", "Yes", "Yes", "Yes", "Yes"] },
-  { name: "Custom Templates", values: ["—", "—", "Yes", "Yes", "Yes"] },
-  { name: "White-Label", values: ["—", "—", "Yes", "Yes", "Full"] },
+  { name: "Texts Per Year", values: ["4-5", "4-5", "4-5", "4-5", "4-5"] },
+  { name: "Messages From Your Number", values: ["Yes", "Yes", "Yes", "Yes", "Yes"] },
+  { name: "Edit Before Sending", values: ["Yes", "Yes", "Yes", "Yes", "Yes"] },
+  { name: "Referral Tracking", values: ["Yes", "Yes", "Yes", "Yes", "Yes"] },
+  { name: "Engagement Insights", values: ["—", "—", "Yes", "Yes", "Yes"] },
   { name: "Team Dashboard", values: ["—", "—", "—", "Yes", "Yes"] },
-  { name: "API Access", values: ["—", "—", "—", "—", "Yes"] },
-  { name: "Success Manager", values: ["—", "—", "—", "—", "Yes"] },
-  { name: "Support", values: ["Email", "Priority", "Phone", "Dedicated", "Dedicated"] },
+  { name: "Manager Oversight", values: ["—", "—", "—", "Yes", "Yes"] },
+  { name: "Dedicated Account Manager", values: ["—", "—", "—", "—", "Yes"] },
+  { name: "Support", values: ["Email", "Email", "Email", "Email", "Email"] },
 ];
 
 export default function Pricing() {
@@ -204,8 +203,7 @@ export default function Pricing() {
         </div>
 
         <p className="text-center text-slate-500 text-sm mb-8">
-          All plans include: TCPA-compliant opt-outs, delivery tracking, message
-          history, and secure data storage.
+          All plans include: 4-5 personalized texts per year, messages from your number, edit before sending, referral tracking, TCPA-compliant opt-outs, and secure data storage.
         </p>
 
         <div className="text-center">

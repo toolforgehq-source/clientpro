@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     q: "Can I customize the messages?",
-    a: "Yes. Starter tier uses our proven templates. Professional and Elite tiers include AI personalization that adapts to each client's property, location, and timeline. Elite tier allows fully custom templates you write yourself.",
+    a: "Yes. Every message is pre-written and personalized with your client's name, property details, and city. You can edit any message before it sends, or let them go out as-is. They feel personal because they are.",
   },
   {
     q: "What if a client wants to stop receiving messages?",
@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     q: "What's the real ROI?",
-    a: "Average agent gets 3-5 deals per year from ClientPro (mix of repeat clients and referrals). At $9K average commission, that's $27K-$45K from a $588-$3,588 annual investment. 750-7,500% ROI.",
+    a: "Average agent gets 3-5 deals per year from ClientPro (mix of repeat clients and referrals). At $9K average commission, that's $27K-$45K from a $470-$14,990 annual investment. The ROI speaks for itself.",
   },
   {
     q: "What industries does this work for?",
@@ -43,7 +43,7 @@ const faqs = [
   },
   {
     q: "Do you integrate with my CRM?",
-    a: "You can import clients via CSV. Full native integrations (Follow Up Boss, KVCore, LionDesk) coming Q2 2025 for Professional tier and above.",
+    a: "You can import clients via CSV. Full native integrations (Follow Up Boss, KVCore, LionDesk) coming soon for Professional tier and above.",
   },
 ];
 

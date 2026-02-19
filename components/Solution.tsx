@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { UserPlus, Bot, PhoneCall } from "lucide-react";
+import { UserPlus, MessageCircle, PhoneCall } from "lucide-react";
 
 const steps = [
   {
@@ -11,10 +11,10 @@ const steps = [
       "Import your past clients or add them one at a time. Takes 30 seconds per client.",
   },
   {
-    icon: Bot,
+    icon: MessageCircle,
     title: "We Keep You Top-of-Mind",
     description:
-      "Automated texts go out from your number. Home tips, market updates, check-ins. Feels personal, not robotic.",
+      "Personalized texts go out from your number. Home tips, market updates, check-ins. Feels like you, not a robot.",
   },
   {
     icon: PhoneCall,
@@ -25,11 +25,11 @@ const steps = [
 ];
 
 const timeline = [
-  { time: "Week 1", message: "Welcome! Here's a home maintenance tip for your first month 🏠" },
-  { time: "Month 3", message: "How's the new place treating you? Any questions about the neighborhood?" },
-  { time: "Month 6", message: "Quick market update: homes in your area are up 4% this quarter 📈" },
+  { time: "Week 1", message: "Hey [Name]! Hope you're settling into [City] well! 🏡" },
+  { time: "Month 3", message: "How's the [property type] treating you? Any questions?" },
+  { time: "Month 6", message: "Quick update: Homes in [City] are up 4% this quarter 📈" },
   { time: "Year 1", message: "Happy house-iversary! 🎉 Can you believe it's been a year?" },
-  { time: "Year 3", message: "Thinking about upgrading? The market is great for sellers right now!" },
+  { time: "Year 2+", message: "Just checking in! How's life in [City]?" },
 ];
 
 export default function Solution() {
@@ -48,7 +48,7 @@ export default function Solution() {
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             Whether they&apos;re ready to buy again or someone they know needs
             help, ClientPro keeps you top-of-mind with automated, personalized
-            texts.
+            messages.
           </p>
         </motion.div>
 
