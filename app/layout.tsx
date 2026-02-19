@@ -13,6 +13,12 @@ export const metadata: Metadata = {
     "Turn past clients into repeat buyers and referrals with automated SMS follow-up. 41% of agent business comes from past clients. Stop leaving money on the table.",
   keywords:
     "real estate SMS, automated follow-up, past client marketing, real estate referrals, repeat business, agent CRM",
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "ClientPro - Never Lose Touch With a Past Client Again",
     description:
@@ -42,7 +48,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <head>
-        <link rel="icon" href="/favicon.ico" />
         <script
           defer
           data-domain="clientpro.io"
