@@ -1,9 +1,11 @@
 const { Pool } = require("pg");
 
+const isExternalDB = (process.env.DATABASE_URL || "").includes("render.com") || (process.env.DATABASE_URL || "").includes("railway.app");
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl:
-    process.env.NODE_ENV === "production"
+    process.env.NODE_ENV === "production" || isExternalDB
       ? { rejectUnauthorized: false }
       : false,
   max: 20,
