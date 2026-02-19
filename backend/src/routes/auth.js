@@ -74,10 +74,23 @@ router.post(
         return res.status(409).json({ error: { message: "Email already registered", code: "EMAIL_EXISTS" } });
       }
 
-      const createData = { ...req.body };
+      const createData = {
+        email: req.body.email,
+        password: req.body.password,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        phone_number: req.body.phone_number,
+        company_name: req.body.company_name,
+      };
+
       if (req.query.team && req.query.role) {
         const parentUser = await User.findById(req.query.team);
         if (parentUser && (parentUser.subscription_tier === "team" || parentUser.subscription_tier === "brokerage")) {
+          const teamMembers = await User.getTeamMembers(parentUser.id);
+          const tierLimits = TIER_LIMITS[parentUser.subscription_tier];
+          if (tierLimits && tierLimits.max_agents !== Infinity && teamMembers.length >= tierLimits.max_agents) {
+            return res.status(403).json({ error: { message: "Team agent limit reached", code: "AGENT_LIMIT" } });
+          }
           createData.parent_user_id = parentUser.id;
           createData.user_role = req.query.role === "admin" ? "team_admin" : "agent";
           createData.subscription_tier = parentUser.subscription_tier;
