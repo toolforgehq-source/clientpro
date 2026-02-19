@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MessageSquare, Clock, CheckCircle, MessageCircle, AlertCircle } from "lucide-react";
+import { MessageSquare, Clock, CheckCircle, MessageCircle } from "lucide-react";
 import { api, Message } from "@/lib/api";
 import { useToast } from "@/components/ui/Toast";
 import Header from "@/components/dashboard/Header";
@@ -172,7 +172,7 @@ function MessagesContent() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
                         <button
-                          onClick={() => router.push(`/clients/${msg.client_id}`)}
+                          onClick={() => router.push(`/dashboard/clients/${msg.client_id}`)}
                           className="text-sm font-medium text-primary hover:underline"
                         >
                           {msg.client_first_name} {msg.client_last_name}
@@ -222,7 +222,7 @@ function MessagesContent() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => router.push(`/clients/${msg.client_id}`)}
+                      onClick={() => router.push(`/dashboard/clients/${msg.client_id}`)}
                       className="text-sm font-medium text-primary hover:underline"
                     >
                       {msg.client_first_name} {msg.client_last_name}
@@ -250,7 +250,7 @@ function MessagesContent() {
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                   <button
-                    onClick={() => router.push(`/clients/${msg.client_id}`)}
+                    onClick={() => router.push(`/dashboard/clients/${msg.client_id}`)}
                     className="text-sm font-medium text-primary hover:underline"
                   >
                     {msg.client_first_name} {msg.client_last_name}

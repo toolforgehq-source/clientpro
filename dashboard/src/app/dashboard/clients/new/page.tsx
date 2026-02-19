@@ -70,7 +70,7 @@ export default function NewClientPage() {
     } else {
       toast("success", `Client added! ${result?.messages_scheduled || 4} messages scheduled.`);
       refreshUser();
-      router.push("/clients");
+      router.push("/dashboard/clients");
     }
   };
 
@@ -85,7 +85,7 @@ export default function NewClientPage() {
       <Header
         title="Add Client"
         breadcrumbs={[
-          { label: "Clients", href: "/clients" },
+          { label: "Clients", href: "/dashboard/clients" },
           { label: "Add Client" },
         ]}
       />
@@ -216,7 +216,7 @@ export default function NewClientPage() {
           </div>
 
           <div className="flex justify-end gap-3">
-            <Button variant="secondary" type="button" onClick={() => router.push("/clients")}>
+            <Button variant="secondary" type="button" onClick={() => router.push("/dashboard/clients")}>
               Cancel
             </Button>
             <Button type="submit" loading={loading}>
@@ -240,7 +240,7 @@ export default function NewClientPage() {
           <Button variant="ghost" onClick={() => setLimitModal(false)}>
             Cancel
           </Button>
-          <Button onClick={() => router.push("/settings?tab=billing")}>View Pricing</Button>
+          <Button onClick={() => router.push("/dashboard/settings?tab=billing")}>View Pricing</Button>
         </div>
       </Modal>
     </div>

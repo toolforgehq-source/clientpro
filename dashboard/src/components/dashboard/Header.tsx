@@ -19,7 +19,7 @@ export default function Header({ title, breadcrumbs, actions }: HeaderProps) {
     <div className="mb-6">
       {breadcrumbs && breadcrumbs.length > 0 && (
         <nav className="mb-2 flex items-center gap-1 text-sm text-gray-500">
-          <Link href="/" className="hover:text-primary">
+          <Link href="/dashboard" className="hover:text-primary">
             Dashboard
           </Link>
           {breadcrumbs.map((crumb, i) => (

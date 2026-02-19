@@ -15,14 +15,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useAuth } from "@/context/AuthContext";
-import { api, AnalyticsData, Client } from "@/lib/api";
+import { api, AnalyticsData } from "@/lib/api";
 import { useToast } from "@/components/ui/Toast";
 import Header from "@/components/dashboard/Header";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import StatCard from "@/components/dashboard/StatCard";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { getEngagementColor, TIER_LABELS } from "@/lib/utils";
+import { getEngagementColor } from "@/lib/utils";
 
 export default function AnalyticsPage() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export default function AnalyticsPage() {
             See engagement insights, top clients, performance trends, and more. Upgrade to Elite
             to unlock analytics.
           </p>
-          <Button className="mt-6" onClick={() => router.push("/settings?tab=billing")}>
+          <Button className="mt-6" onClick={() => router.push("/dashboard/settings?tab=billing")}>
             Upgrade to Elite
           </Button>
           <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 opacity-50 blur-sm pointer-events-none">
@@ -165,7 +165,7 @@ export default function AnalyticsPage() {
               {data.top_engaged.map((client) => (
                 <button
                   key={client.id}
-                  onClick={() => router.push(`/clients/${client.id}`)}
+                  onClick={() => router.push(`/dashboard/clients/${client.id}`)}
                   className="flex w-full items-center justify-between rounded-lg p-3 hover:bg-gray-50 transition-colors text-left"
                 >
                   <span className="text-sm font-medium text-gray-900">
@@ -189,7 +189,7 @@ export default function AnalyticsPage() {
               {data.low_engaged.map((client) => (
                 <button
                   key={client.id}
-                  onClick={() => router.push(`/clients/${client.id}`)}
+                  onClick={() => router.push(`/dashboard/clients/${client.id}`)}
                   className="flex w-full items-center justify-between rounded-lg p-3 hover:bg-gray-50 transition-colors text-left"
                 >
                   <span className="text-sm font-medium text-gray-900">

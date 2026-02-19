@@ -12,7 +12,6 @@ import {
   Trash2,
   CheckCircle,
   Clock,
-  MessageSquare,
   UserPlus,
 } from "lucide-react";
 import { api, Client, Message, Referral } from "@/lib/api";
@@ -26,7 +25,6 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
 import {
   formatDate,
-  formatRelativeDate,
   getEngagementColor,
   getStatusColor,
   PROPERTY_TYPE_LABELS,
@@ -75,7 +73,7 @@ export default function ClientDetailPage() {
       const { data, error } = await api.clients.get(clientId);
       if (error || !data) {
         toast("error", error || "Client not found");
-        router.push("/clients");
+        router.push("/dashboard/clients");
         return;
       }
       setClient(data.client);
@@ -124,7 +122,7 @@ export default function ClientDetailPage() {
       toast("error", error);
     } else {
       toast("success", "Client removed");
-      router.push("/clients");
+      router.push("/dashboard/clients");
     }
   };
 
@@ -160,7 +158,7 @@ export default function ClientDetailPage() {
       <Header
         title={`${client.first_name} ${client.last_name}`}
         breadcrumbs={[
-          { label: "Clients", href: "/clients" },
+          { label: "Clients", href: "/dashboard/clients" },
           { label: `${client.first_name} ${client.last_name}` },
         ]}
         actions={
@@ -300,7 +298,7 @@ export default function ClientDetailPage() {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => router.push(`/referrals?from=${clientId}`)}
+                onClick={() => router.push(`/dashboard/referrals?from=${clientId}`)}
               >
                 <UserPlus className="mr-1.5 h-3.5 w-3.5" /> Add
               </Button>

@@ -20,7 +20,7 @@ import Badge from "@/components/ui/Badge";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
 import Modal from "@/components/ui/Modal";
-import { formatDate, formatRelativeDate, getEngagementColor, PROPERTY_TYPE_LABELS, TIER_CLIENT_LIMITS } from "@/lib/utils";
+import { formatDate, getEngagementColor, PROPERTY_TYPE_LABELS, TIER_CLIENT_LIMITS } from "@/lib/utils";
 import { Users } from "lucide-react";
 
 const columnHelper = createColumnHelper<Client>();
@@ -160,7 +160,7 @@ export default function ClientsPage() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/clients/${client.id}`);
+                    router.push(`/dashboard/clients/${client.id}`);
                     setMenuOpen(null);
                   }}
                   className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -170,7 +170,7 @@ export default function ClientsPage() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/clients/${client.id}?edit=true`);
+                    router.push(`/dashboard/clients/${client.id}?edit=true`);
                     setMenuOpen(null);
                   }}
                   className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -215,7 +215,7 @@ export default function ClientsPage() {
             <Button variant="secondary" onClick={() => setImportModal(true)}>
               <Upload className="mr-2 h-4 w-4" /> Import CSV
             </Button>
-            <Button onClick={() => router.push("/clients/new")}>
+            <Button onClick={() => router.push("/dashboard/clients/new")}>
               <Plus className="mr-2 h-4 w-4" /> Add Client
             </Button>
           </div>
@@ -251,7 +251,7 @@ export default function ClientsPage() {
                 : "Add your first client to start automating follow-up"
             }
             actionLabel={search ? undefined : "Add Client"}
-            onAction={search ? undefined : () => router.push("/clients/new")}
+            onAction={search ? undefined : () => router.push("/dashboard/clients/new")}
           />
         </div>
       ) : (
@@ -279,7 +279,7 @@ export default function ClientsPage() {
                   {table.getRowModel().rows.map((row) => (
                     <tr
                       key={row.id}
-                      onClick={() => router.push(`/clients/${row.original.id}`)}
+                      onClick={() => router.push(`/dashboard/clients/${row.original.id}`)}
                       className="border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors"
                     >
                       {row.getVisibleCells().map((cell) => (

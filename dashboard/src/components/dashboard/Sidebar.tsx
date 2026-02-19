@@ -18,13 +18,13 @@ import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/clients", label: "Clients", icon: Users },
-  { href: "/messages", label: "Messages", icon: MessageSquare },
-  { href: "/referrals", label: "Referrals", icon: UserPlus },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/team", label: "Team", icon: UsersRound, tiers: ["team", "brokerage"] },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/clients", label: "Clients", icon: Users },
+  { href: "/dashboard/messages", label: "Messages", icon: MessageSquare },
+  { href: "/dashboard/referrals", label: "Referrals", icon: UserPlus },
+  { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/dashboard/team", label: "Team", icon: UsersRound, tiers: ["team", "brokerage"] },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -37,7 +37,7 @@ export default function Sidebar() {
   );
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
+    if (href === "/dashboard") return pathname === "/dashboard";
     return pathname.startsWith(href);
   };
 
@@ -46,7 +46,7 @@ export default function Sidebar() {
   const navContent = (
     <>
       <div className="p-4 border-b border-gray-100">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
             <span className="text-lg font-bold text-white">C</span>
           </div>

@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from "@/lib/clsx";
+import { type ClassValue } from "@/lib/clsx";
 
 export function cn(...inputs: ClassValue[]) {
   return inputs.filter(Boolean).join(" ");

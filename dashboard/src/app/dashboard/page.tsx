@@ -7,10 +7,9 @@ import { useAuth } from "@/context/AuthContext";
 import { api, Message, Client } from "@/lib/api";
 import Header from "@/components/dashboard/Header";
 import StatCard from "@/components/dashboard/StatCard";
-import Button from "@/components/ui/Button";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
-import { formatDate, formatRelativeDate, TIER_CLIENT_LIMITS } from "@/lib/utils";
+import { formatRelativeDate, TIER_CLIENT_LIMITS } from "@/lib/utils";
 
 interface RecentActivity {
   type: "message_sent" | "client_added" | "referral";
@@ -66,13 +65,13 @@ export default function DashboardHome() {
       type: "message_sent" as const,
       description: `Message sent to ${m.client_first_name} ${m.client_last_name} - ${m.message_type}`,
       date: m.sent_at || m.scheduled_date,
-      link: `/clients/${m.client_id}`,
+      link: `/dashboard/clients/${m.client_id}`,
     })),
     ...recentClients.slice(0, 5).map((c) => ({
       type: "client_added" as const,
       description: `Client added: ${c.first_name} ${c.last_name}`,
       date: c.created_at,
-      link: `/clients/${c.id}`,
+      link: `/dashboard/clients/${c.id}`,
     })),
   ]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -87,21 +86,21 @@ export default function DashboardHome() {
           value={usage?.clients_count ?? 0}
           subtitle={`of ${clientLimit} limit`}
           icon={<Users className="h-6 w-6" />}
-          href="/clients"
+          href="/dashboard/clients"
         />
         <StatCard
           title="Messages Sent"
           value={usage?.messages_sent_this_month ?? 0}
           subtitle="this month"
           icon={<MessageSquare className="h-6 w-6" />}
-          href="/messages"
+          href="/dashboard/messages"
         />
         <StatCard
           title="Client Replies"
           value={`${replyCount} unread`}
           subtitle="responses from clients"
           icon={<MessageCircle className="h-6 w-6" />}
-          href="/messages?tab=replies"
+          href="/dashboard/messages?tab=replies"
           badge={replyCount}
         />
         <StatCard
@@ -109,7 +108,7 @@ export default function DashboardHome() {
           value={referralCount}
           subtitle="this year"
           icon={<UserPlus className="h-6 w-6" />}
-          href="/referrals"
+          href="/dashboard/referrals"
         />
       </div>
 
@@ -118,7 +117,7 @@ export default function DashboardHome() {
           <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
           <div className="mt-4 space-y-3">
             <button
-              onClick={() => router.push("/clients/new")}
+              onClick={() => router.push("/dashboard/clients/new")}
               className="flex w-full items-center gap-3 rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50 transition-colors"
             >
               <div className="rounded-lg bg-primary-50 p-2">
@@ -130,7 +129,7 @@ export default function DashboardHome() {
               </div>
             </button>
             <button
-              onClick={() => router.push("/messages")}
+              onClick={() => router.push("/dashboard/messages")}
               className="flex w-full items-center gap-3 rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50 transition-colors"
             >
               <div className="rounded-lg bg-primary-50 p-2">
@@ -152,7 +151,7 @@ export default function DashboardHome() {
               title="No activity yet"
               description="Add your first client to get started"
               actionLabel="Add Client"
-              onAction={() => router.push("/clients/new")}
+              onAction={() => router.push("/dashboard/clients/new")}
             />
           ) : (
             <div className="mt-4 space-y-3">
