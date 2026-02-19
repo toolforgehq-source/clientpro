@@ -74,7 +74,17 @@ router.post(
         return res.status(409).json({ error: { message: "Email already registered", code: "EMAIL_EXISTS" } });
       }
 
-      const user = await User.create(req.body);
+      const createData = { ...req.body };
+      if (req.query.team && req.query.role) {
+        const parentUser = await User.findById(req.query.team);
+        if (parentUser && (parentUser.subscription_tier === "team" || parentUser.subscription_tier === "brokerage")) {
+          createData.parent_user_id = parentUser.id;
+          createData.user_role = req.query.role === "admin" ? "team_admin" : "agent";
+          createData.subscription_tier = parentUser.subscription_tier;
+        }
+      }
+
+      const user = await User.create(createData);
       const token = generateToken(user.id);
 
       const areaCode = req.body.phone_number ? req.body.phone_number.slice(2, 5) : null;

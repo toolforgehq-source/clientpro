@@ -23,7 +23,7 @@ const handleIncomingSMS = async ({ From, To, Body, MessageSid }) => {
   }
 
   const bodyLower = Body.trim().toLowerCase();
-  if (STOP_KEYWORDS.some((kw) => bodyLower === kw)) {
+  if (STOP_KEYWORDS.some((kw) => bodyLower.includes(kw))) {
     await Client.softDelete(client.id);
     await Message.cancelFutureForClient(client.id);
     logger.info(`Client ${client.id} opted out (STOP)`);

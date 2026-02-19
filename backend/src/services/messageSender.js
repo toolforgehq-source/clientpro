@@ -1,4 +1,5 @@
 const { getTwilioClient } = require("../config/twilio");
+const { query } = require("../config/database");
 const Message = require("../models/Message");
 const User = require("../models/User");
 const logger = require("../utils/logger");
@@ -45,7 +46,5 @@ const sendMessage = async (message) => {
     return false;
   }
 };
-
-const { query } = require("../config/database");
 
 module.exports = { sendMessage };

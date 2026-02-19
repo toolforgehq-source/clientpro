@@ -2,13 +2,13 @@ const { query } = require("../config/database");
 const bcrypt = require("bcrypt");
 
 const User = {
-  async create({ email, password, first_name, last_name, phone_number, company_name }) {
+  async create({ email, password, first_name, last_name, phone_number, company_name, parent_user_id, user_role, subscription_tier }) {
     const password_hash = await bcrypt.hash(password, 10);
     const result = await query(
-      `INSERT INTO users (email, password_hash, first_name, last_name, phone_number, company_name)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, user_role, created_at`,
-      [email, password_hash, first_name, last_name, phone_number, company_name || null]
+      `INSERT INTO users (email, password_hash, first_name, last_name, phone_number, company_name, parent_user_id, user_role, subscription_tier)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, COALESCE($8, 'agent'), COALESCE($9, 'starter'))
+       RETURNING id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, user_role, parent_user_id, created_at`,
+      [email, password_hash, first_name, last_name, phone_number, company_name || null, parent_user_id || null, user_role || null, subscription_tier || null]
     );
     return result.rows[0];
   },
