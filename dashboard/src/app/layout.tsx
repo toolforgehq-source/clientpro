@@ -8,7 +8,6 @@ export const metadata: Metadata = {
   description: "Manage your past clients and automated follow-up messages",
   icons: {
     icon: [
-      { url: "/favicon.ico" },
       { url: "/favicon.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],

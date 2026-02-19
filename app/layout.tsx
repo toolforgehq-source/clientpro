@@ -15,7 +15,6 @@ export const metadata: Metadata = {
     "real estate SMS, automated follow-up, past client marketing, real estate referrals, repeat business, agent CRM",
   icons: {
     icon: [
-      { url: "/favicon.ico" },
       { url: "/favicon.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],
