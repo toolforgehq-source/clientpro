@@ -172,7 +172,7 @@ export default function Pricing() {
               <h3 className="text-lg font-bold text-dark mb-2">{plan.name}</h3>
               <div className="mb-4">
                 <span className="text-4xl font-bold text-dark">
-                  ${annual ? Math.round(plan.annual / 12) : plan.monthly}
+                  ${plan.monthly.toLocaleString()}
                 </span>
                 <span className="text-slate-500">/mo</span>
                 {annual && (
