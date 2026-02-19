@@ -1,0 +1,32 @@
+{
+  "name": "clientpro-backend",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:setup": "node src/scripts/setupDatabase.js",
+    "stripe:setup": "node src/scripts/setupStripe.js",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "ClientPro Backend API - SMS follow-up for real estate agents",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "csv-parse": "^6.1.0",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "pg": "^8.18.0",
+    "resend": "^6.9.2",
+    "stripe": "^20.3.1",
+    "twilio": "^5.12.2",
+    "uuid": "^13.0.0"
+  }
+}
