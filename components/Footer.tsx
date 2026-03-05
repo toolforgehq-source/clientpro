@@ -4,6 +4,7 @@ import Link from "next/link";
 const productLinks = [
   { href: "#how-it-works", label: "How It Works" },
   { href: "#pricing", label: "Pricing" },
+  { href: "/brokerages", label: "Brokerages" },
   { href: "#faq", label: "FAQ" },
   { href: "https://app.clientpro.io/login", label: "Login" },
   { href: "https://app.clientpro.io/register", label: "Sign Up" },

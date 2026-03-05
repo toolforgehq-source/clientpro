@@ -19,7 +19,7 @@ const faqs = [
   },
   {
     q: "Is there a free trial?",
-    a: "No. We're a professional tool for serious agents who understand ROI. One repeat client or referral pays for the entire year. We don't need gimmicks.",
+    a: "No. ClientPro starts at $29/month\u2014less than a single client lunch. One referral from a past client pays for the entire year. This is an investment that pays for itself.",
   },
   {
     q: "How long until I see results?",
@@ -43,7 +43,7 @@ const faqs = [
   },
   {
     q: "Do you integrate with my CRM?",
-    a: "You can import clients via CSV. Full native integrations (Follow Up Boss, KVCore, LionDesk) coming soon for Professional tier and above.",
+    a: "You can import clients via CSV today\u2014it takes 30 seconds. Native integrations with Follow Up Boss, KVCore, and LionDesk are launching soon. Once connected, new past clients sync automatically.",
   },
 ];
 

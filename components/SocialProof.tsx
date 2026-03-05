@@ -1,40 +1,39 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Shield, Lock, Server, Award } from "lucide-react";
+import { Shield, Lock, MessageSquare, Zap, ArrowRight } from "lucide-react";
 
-const testimonials = [
+const reasons = [
   {
-    quote:
-      "I got 2 repeat clients and 3 referrals in my first year with ClientPro. It paid for itself 10x over. Now I know my past clients actually remember me.",
-    name: "Sarah M.",
-    title: "Luxury Agent, Austin TX",
-    detail: "4 years experience, 18 deals/year",
-    initials: "SM",
+    icon: MessageSquare,
+    title: "Texts From Your Number",
+    description:
+      "Messages come from a dedicated number that looks like yours. Clients reply directly to you. No generic marketing blasts.",
   },
   {
-    quote:
-      "A client I helped 3 years ago texted back: 'Ready to upgrade—let's talk!' I honestly forgot about them. ClientPro didn't. That one deal paid for 3 years of the service.",
-    name: "Mike T.",
-    title: "Team Lead, Phoenix AZ",
-    detail: "12 years experience, 35 deals/year",
-    initials: "MT",
+    icon: Zap,
+    title: "Set It and Forget It",
+    description:
+      "Import your clients once. We handle the rest\u2014personalized check-ins, home tips, market updates. 4-5 texts per year, timed perfectly.",
   },
   {
-    quote:
-      "Half my business now comes from past clients. Before ClientPro it was basically zero. The ROI is insane—I don't know how I worked without this.",
-    name: "Jennifer L.",
-    title: "Top Producer, Miami FL",
-    detail: "8 years experience, 42 deals/year",
-    initials: "JL",
+    icon: ArrowRight,
+    title: "Built for Referrals",
+    description:
+      "Every message is designed to keep you top-of-mind. When their friend needs an agent, your name comes up first.",
   },
+];
+
+const integrations = [
+  "Follow Up Boss",
+  "KVCore",
+  "LionDesk",
+  "CSV Import",
 ];
 
 const badges = [
   { icon: Shield, label: "TCPA Compliant" },
-  { icon: Lock, label: "Bank-Level Security" },
-  { icon: Server, label: "99.9% Uptime" },
-  { icon: Award, label: "SOC 2 Certified" },
+  { icon: Lock, label: "Bank-Level Encryption" },
 ];
 
 export default function SocialProof() {
@@ -48,29 +47,16 @@ export default function SocialProof() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark mb-4">
-            Join 500+ Agents Who Never Lose Touch
+            Why Agents Choose ClientPro
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
-            Real results from agents who stopped letting past clients disappear.
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            The only tool built specifically to turn past clients into your
+            biggest source of repeat business and referrals.
           </p>
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 mb-4">
-            <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-primary">12,000+</p>
-              <p className="text-sm text-slate-500 mt-1">Messages Sent</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-primary">2,400+</p>
-              <p className="text-sm text-slate-500 mt-1">Referrals Generated</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-primary">$4.2M+</p>
-              <p className="text-sm text-slate-500 mt-1">Commission Earned</p>
-            </div>
-          </div>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {testimonials.map((t, i) => (
+          {reasons.map((reason, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -79,34 +65,64 @@ export default function SocialProof() {
               transition={{ delay: i * 0.15 }}
               className="bg-gray-100 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-all duration-300"
             >
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, j) => (
-                  <svg
-                    key={j}
-                    className="w-5 h-5 text-yellow-400"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
+                <reason.icon className="w-6 h-6 text-primary" />
               </div>
-              <p className="text-slate-700 mb-6 leading-relaxed">
-                &ldquo;{t.quote}&rdquo;
+              <h3 className="text-lg font-bold text-dark mb-2">{reason.title}</h3>
+              <p className="text-slate-600 leading-relaxed">
+                {reason.description}
               </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-sm font-bold shadow-md">
-                  {t.initials}
-                </div>
-                <div>
-                  <p className="font-semibold text-dark text-sm">{t.name}</p>
-                  <p className="text-slate-500 text-xs">{t.title}</p>
-                  <p className="text-slate-400 text-xs">{t.detail}</p>
-                </div>
-              </div>
             </motion.div>
           ))}
         </div>
+
+        {/* CRM Integrations */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-gray-100 rounded-2xl p-8 md:p-12 mb-16 text-center"
+        >
+          <h3 className="text-xl md:text-2xl font-bold text-dark mb-3">
+            Works With Your Existing Tools
+          </h3>
+          <p className="text-slate-600 mb-8 max-w-xl mx-auto">
+            Import clients via CSV today. Native CRM integrations launching soon.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            {integrations.map((name, i) => (
+              <div
+                key={i}
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium ${
+                  name === "CSV Import"
+                    ? "bg-primary/10 text-primary border border-primary/20"
+                    : "bg-white text-slate-600 border border-slate-200"
+                }`}
+              >
+                {name}
+                {name !== "CSV Import" && (
+                  <span className="text-xs text-accent ml-2 font-semibold">Soon</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Urgency callout */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="border border-primary/40 bg-primary/5 rounded-xl p-6 md:p-8 max-w-3xl mx-auto text-center mb-16"
+        >
+          <p className="text-dark text-lg font-medium mb-2">
+            Your past clients are getting texts from other agents right now.
+          </p>
+          <p className="text-slate-600">
+            Every month you wait, you lose potential referrals and repeat business
+            to agents who stayed in touch. The best time to start was yesterday.
+          </p>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
