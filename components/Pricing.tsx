@@ -115,12 +115,9 @@ export default function Pricing() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark mb-4">
             Simple Pricing. Massive ROI.
           </h2>
-          <p className="text-lg text-slate-600 mb-3">
+          <p className="text-lg text-slate-600 mb-8">
             One deal pays for an entire year. Everything after that is pure
             profit.
-          </p>
-          <p className="inline-block bg-accent/10 text-accent font-semibold text-sm px-4 py-1.5 rounded-full mb-8">
-            Launch pricing &mdash; rates increase after early access
           </p>
 
           <div className="flex items-center justify-center gap-4">
