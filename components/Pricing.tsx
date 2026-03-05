@@ -115,9 +115,12 @@ export default function Pricing() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark mb-4">
             Simple Pricing. Massive ROI.
           </h2>
-          <p className="text-lg text-slate-600 mb-8">
+          <p className="text-lg text-slate-600 mb-3">
             One deal pays for an entire year. Everything after that is pure
             profit.
+          </p>
+          <p className="inline-block bg-accent/10 text-accent font-semibold text-sm px-4 py-1.5 rounded-full mb-8">
+            Launch pricing &mdash; rates increase after early access
           </p>
 
           <div className="flex items-center justify-center gap-4">
@@ -149,40 +152,42 @@ export default function Pricing() {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12">
-          {plans.map((plan, i) => (
+        {/* Top row: first 3 plans */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-6">
+          {plans.slice(0, 3).map((plan, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className={`relative bg-white rounded-2xl p-6 ${
+              className={`relative bg-white rounded-2xl p-6 md:p-8 ${
                 plan.popular
-                  ? "border-2 border-primary shadow-xl ring-1 ring-primary/20"
-                  : "border border-slate-200"
+                  ? "border-2 border-primary shadow-xl ring-1 ring-primary/20 md:scale-105 md:-my-2 z-10"
+                  : "border border-slate-200 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
                   MOST POPULAR
                 </div>
               )}
-              <h3 className="text-lg font-bold text-dark mb-2">{plan.name}</h3>
-              <div className="mb-4">
+              <h3 className="text-lg font-bold text-dark mb-1">{plan.name}</h3>
+              <p className="text-xs text-slate-400 mb-4">{plan.name === "Starter" ? "For new agents" : plan.name === "Professional" ? "For growing agents" : "For top producers"}</p>
+              <div className="mb-6">
                 <span className="text-4xl font-bold text-dark">
                   ${plan.monthly.toLocaleString()}
                 </span>
                 <span className="text-slate-500">/mo</span>
                 {annual && (
                   <p className="text-sm text-slate-500 mt-1">
-                    ${plan.annual.toLocaleString()}/year
+                    ${plan.annual.toLocaleString()}/year &middot; <span className="text-accent font-medium">Save ${(plan.monthly * 12 - plan.annual).toLocaleString()}</span>
                   </p>
                 )}
               </div>
-              <ul className="space-y-2.5 mb-6">
+              <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, j) => (
-                  <li key={j} className="flex items-start gap-2 text-sm">
+                  <li key={j} className="flex items-start gap-2.5 text-sm">
                     <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
                     <span className="text-slate-600">{feature}</span>
                   </li>
@@ -190,11 +195,53 @@ export default function Pricing() {
               </ul>
               <a
                 href={plan.href}
-                className={`block text-center py-3 rounded-lg font-semibold text-sm transition-all duration-200 ${
+                className={`block text-center py-3.5 rounded-lg font-semibold text-sm transition-all duration-200 ${
                   plan.popular
-                    ? "bg-primary text-white hover:bg-primary-dark shadow-lg hover:shadow-xl"
+                    ? "bg-primary text-white hover:bg-primary-dark shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                     : "border-2 border-primary text-primary hover:bg-primary hover:text-white"
                 }`}
+              >
+                {plan.cta} &rarr;
+              </a>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Bottom row: Team & Brokerage */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12">
+          {plans.slice(3).map((plan, i) => (
+            <motion.div
+              key={i + 3}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: (i + 3) * 0.1 }}
+              className="relative bg-white rounded-2xl p-6 md:p-8 border border-slate-200 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+            >
+              <h3 className="text-lg font-bold text-dark mb-1">{plan.name}</h3>
+              <p className="text-xs text-slate-400 mb-4">{plan.name === "Team" ? "For small teams" : "For brokerages"}</p>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-dark">
+                  ${plan.monthly.toLocaleString()}
+                </span>
+                <span className="text-slate-500">/mo</span>
+                {annual && (
+                  <p className="text-sm text-slate-500 mt-1">
+                    ${plan.annual.toLocaleString()}/year &middot; <span className="text-accent font-medium">Save ${(plan.monthly * 12 - plan.annual).toLocaleString()}</span>
+                  </p>
+                )}
+              </div>
+              <ul className="space-y-3 mb-8">
+                {plan.features.map((feature, j) => (
+                  <li key={j} className="flex items-start gap-2.5 text-sm">
+                    <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-600">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={plan.href}
+                className="block text-center py-3.5 rounded-lg font-semibold text-sm transition-all duration-200 border-2 border-primary text-primary hover:bg-primary hover:text-white"
               >
                 {plan.cta} &rarr;
               </a>

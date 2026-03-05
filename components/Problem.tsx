@@ -54,8 +54,10 @@ const stats = [
 
 export default function Problem() {
   return (
-    <section className="py-12 md:py-20 bg-dark">
-      <div className="max-w-container mx-auto px-6">
+    <section className="relative py-12 md:py-20 bg-dark overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-dark via-dark to-slate-900" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="relative max-w-container mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,7 +77,7 @@ export default function Problem() {
               transition={{ delay: i * 0.15 }}
               className="text-center"
             >
-              <p className="text-5xl md:text-6xl font-bold text-primary mb-3">
+              <p className="text-5xl md:text-6xl font-bold text-primary mb-3 tabular-nums">
                 <CountUp target={stat.value} />
               </p>
               <p className="text-gray-300 text-lg">{stat.label}</p>

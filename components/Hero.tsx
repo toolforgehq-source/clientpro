@@ -1,32 +1,38 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Shield, Star } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="pt-24 md:pt-32 pb-0 bg-white">
-      <div className="max-w-container mx-auto px-6">
+    <section className="relative pt-24 md:pt-32 pb-0 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-primary/5" />
+      <div className="absolute top-20 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-primary/3 rounded-full blur-3xl" />
+      <div className="relative max-w-container mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-sm font-medium text-primary mb-4">
-              Join 500+ agents who stay connected to past clients
-            </p>
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <Star className="w-4 h-4 fill-primary" />
+              <span>Join 500+ agents who stay connected to past clients</span>
+            </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-dark leading-tight mb-6">
-              Never Lose Touch With a Past Client Again
+              Never Lose Touch With a Past Client{" "}
+              <span className="text-primary">Again</span>
             </h1>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
               Automated text messages that keep you top-of-mind. When
               they&apos;re ready to buy again&mdash;or their friend needs an
               agent&mdash;you get the call.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <a
                 href="#pricing"
-                className="bg-primary text-white px-8 py-4 rounded-lg font-semibold text-center hover:bg-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="bg-primary text-white px-8 py-4 rounded-lg font-semibold text-center hover:bg-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
                 Start Building Your Pipeline &rarr;
               </a>
@@ -37,6 +43,16 @@ export default function Hero() {
                 See How It Works &darr;
               </a>
             </div>
+            <div className="flex items-center gap-4 text-sm text-slate-500">
+              <div className="flex items-center gap-1.5">
+                <Shield className="w-4 h-4 text-primary" />
+                <span>TCPA Compliant</span>
+              </div>
+              <span className="text-slate-300">|</span>
+              <span>Setup in 2 minutes</span>
+              <span className="text-slate-300">|</span>
+              <span>Cancel anytime</span>
+            </div>
           </motion.div>
 
           <motion.div
@@ -46,7 +62,8 @@ export default function Hero() {
             className="relative flex justify-center"
           >
             <div className="relative w-72 mx-auto">
-              <div className="bg-slate-900 rounded-[3rem] p-3 shadow-2xl">
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-primary/5 rounded-[4rem] blur-2xl" />
+              <div className="relative bg-slate-900 rounded-[3rem] p-3 shadow-2xl">
                 <div className="bg-white rounded-[2.25rem] overflow-hidden">
                   <div className="bg-primary px-4 py-3 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">
@@ -96,7 +113,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="bg-gray-100 mt-16 py-6">
+      <div className="relative bg-gray-100 mt-16 py-6">
         <div className="max-w-container mx-auto px-6 text-center">
           <p className="text-lg text-slate-700 font-medium">
             <span className="text-primary font-bold">41%</span> of your business

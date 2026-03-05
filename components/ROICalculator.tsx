@@ -24,7 +24,7 @@ export default function ROICalculator() {
           : 7990;
 
   return (
-    <section className="py-12 md:py-20 bg-gray-100">
+    <section className="relative py-12 md:py-20 bg-gray-100">
       <div className="max-w-container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -123,7 +123,7 @@ export default function ROICalculator() {
               </div>
             </div>
 
-            <div className="bg-dark rounded-lg p-4 text-center">
+            <div className="bg-gradient-to-r from-dark to-slate-800 rounded-lg p-5 text-center">
               <p className="text-white text-sm mb-1">
                 ClientPro costs{" "}
                 <span className="font-bold text-accent">

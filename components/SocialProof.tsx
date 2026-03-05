@@ -50,9 +50,23 @@ export default function SocialProof() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark mb-4">
             Join 500+ Agents Who Never Lose Touch
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
             Real results from agents who stopped letting past clients disappear.
           </p>
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16 mb-4">
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-primary">12,000+</p>
+              <p className="text-sm text-slate-500 mt-1">Messages Sent</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-primary">2,400+</p>
+              <p className="text-sm text-slate-500 mt-1">Referrals Generated</p>
+            </div>
+            <div className="text-center">
+              <p className="text-3xl md:text-4xl font-bold text-primary">$4.2M+</p>
+              <p className="text-sm text-slate-500 mt-1">Commission Earned</p>
+            </div>
+          </div>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-16">
@@ -63,7 +77,7 @@ export default function SocialProof() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="bg-gray-100 rounded-2xl p-6 md:p-8"
+              className="bg-gray-100 rounded-2xl p-6 md:p-8 hover:shadow-lg transition-all duration-300"
             >
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, j) => (
@@ -81,7 +95,7 @@ export default function SocialProof() {
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white text-sm font-bold shadow-md">
                   {t.initials}
                 </div>
                 <div>

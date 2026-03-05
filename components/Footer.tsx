@@ -114,7 +114,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-slate-500 text-sm">
-            &copy; 2025 ClientPro. All rights reserved.
+            &copy; 2026 ClientPro. All rights reserved.
           </p>
           <p className="text-slate-600 text-xs">
             Made for agents who never lose touch.
