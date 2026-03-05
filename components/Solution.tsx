@@ -34,7 +34,8 @@ const timeline = [
 
 export default function Solution() {
   return (
-    <section id="how-it-works" className="py-12 md:py-20 bg-white">
+    <section id="how-it-works" className="relative py-12 md:py-20 bg-white overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
       <div className="max-w-container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -60,9 +61,9 @@ export default function Solution() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="text-center"
+              className="text-center group"
             >
-              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
                 <step.icon className="w-8 h-8 text-primary" />
               </div>
               <p className="text-sm font-semibold text-primary mb-2">

@@ -46,16 +46,23 @@ const features = [
 
 export default function Features() {
   return (
-    <section className="py-12 md:py-20 bg-white">
-      <div className="max-w-container mx-auto px-6">
-        <motion.h2
+    <section className="relative py-12 md:py-20 bg-white overflow-hidden">
+      <div className="absolute top-0 right-0 w-72 h-72 bg-primary/3 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/3 rounded-full blur-3xl" />
+      <div className="relative max-w-container mx-auto px-6">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark text-center mb-16"
+          className="text-center mb-16"
         >
-          Everything You Need to Stay Connected
-        </motion.h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark mb-4">
+            Everything You Need to Stay Connected
+          </h2>
+          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+            Powerful tools that work on autopilot so you can focus on closing deals.
+          </p>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {features.map((feature, i) => (
@@ -65,9 +72,9 @@ export default function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="border border-slate-200 rounded-xl p-6 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
+              className="bg-white border border-slate-200 rounded-xl p-6 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors duration-300">
                 <feature.icon className="w-6 h-6 text-primary" />
               </div>
               <div className="flex items-center gap-2 mb-2">
