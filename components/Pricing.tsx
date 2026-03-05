@@ -6,6 +6,22 @@ import { Check } from "lucide-react";
 
 const plans = [
   {
+    name: "Solo",
+    monthly: 29,
+    annual: 278,
+    features: [
+      "10 clients",
+      "4-5 personalized texts/year",
+      "Messages from your number",
+      "Edit any message before it sends",
+      "Referral tracking",
+      "Email support",
+    ],
+    cta: "Get Started",
+    href: "https://app.clientpro.io/register",
+    popular: false,
+  },
+  {
     name: "Starter",
     monthly: 49,
     annual: 470,
@@ -87,16 +103,16 @@ const plans = [
 ];
 
 const comparisonFeatures = [
-  { name: "Clients", values: ["20", "100", "500", "1,000", "Unlimited"] },
-  { name: "Texts Per Year", values: ["4-5", "4-5", "4-5", "4-5", "4-5"] },
-  { name: "Messages From Your Number", values: ["Yes", "Yes", "Yes", "Yes", "Yes"] },
-  { name: "Edit Before Sending", values: ["Yes", "Yes", "Yes", "Yes", "Yes"] },
-  { name: "Referral Tracking", values: ["Yes", "Yes", "Yes", "Yes", "Yes"] },
-  { name: "Engagement Insights", values: ["—", "—", "Yes", "Yes", "Yes"] },
-  { name: "Team Dashboard", values: ["—", "—", "—", "Yes", "Yes"] },
-  { name: "Manager Oversight", values: ["—", "—", "—", "Yes", "Yes"] },
-  { name: "Dedicated Account Manager", values: ["—", "—", "—", "—", "Yes"] },
-  { name: "Support", values: ["Email", "Email", "Email", "Email", "Email"] },
+  { name: "Clients", values: ["10", "20", "100", "500", "1,000", "Unlimited"] },
+  { name: "Texts Per Year", values: ["4-5", "4-5", "4-5", "4-5", "4-5", "4-5"] },
+  { name: "Messages From Your Number", values: ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes"] },
+  { name: "Edit Before Sending", values: ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes"] },
+  { name: "Referral Tracking", values: ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes"] },
+  { name: "Engagement Insights", values: ["\u2014", "\u2014", "\u2014", "Yes", "Yes", "Yes"] },
+  { name: "Team Dashboard", values: ["\u2014", "\u2014", "\u2014", "\u2014", "Yes", "Yes"] },
+  { name: "Manager Oversight", values: ["\u2014", "\u2014", "\u2014", "\u2014", "Yes", "Yes"] },
+  { name: "Dedicated Account Manager", values: ["\u2014", "\u2014", "\u2014", "\u2014", "\u2014", "Yes"] },
+  { name: "Support", values: ["Email", "Email", "Email", "Email", "Email", "Email"] },
 ];
 
 export default function Pricing() {
@@ -149,9 +165,9 @@ export default function Pricing() {
           </div>
         </motion.div>
 
-        {/* Top row: first 3 plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-6">
-          {plans.slice(0, 3).map((plan, i) => (
+        {/* Top row: first 4 individual plans */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-6">
+          {plans.slice(0, 4).map((plan, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
@@ -170,7 +186,7 @@ export default function Pricing() {
                 </div>
               )}
               <h3 className="text-lg font-bold text-dark mb-1">{plan.name}</h3>
-              <p className="text-xs text-slate-400 mb-4">{plan.name === "Starter" ? "For new agents" : plan.name === "Professional" ? "For growing agents" : "For top producers"}</p>
+              <p className="text-xs text-slate-400 mb-4">{plan.name === "Solo" ? "Just getting started" : plan.name === "Starter" ? "For new agents" : plan.name === "Professional" ? "For growing agents" : "For top producers"}</p>
               <div className="mb-6">
                 <span className="text-4xl font-bold text-dark">
                   ${plan.monthly.toLocaleString()}
@@ -206,13 +222,13 @@ export default function Pricing() {
 
         {/* Bottom row: Team & Brokerage */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12">
-          {plans.slice(3).map((plan, i) => (
+          {plans.slice(4).map((plan, i) => (
             <motion.div
-              key={i + 3}
+              key={i + 4}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: (i + 3) * 0.1 }}
+              transition={{ delay: (i + 4) * 0.1 }}
               className="relative bg-white rounded-2xl p-6 md:p-8 border border-slate-200 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
             >
               <h3 className="text-lg font-bold text-dark mb-1">{plan.name}</h3>

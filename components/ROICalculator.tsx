@@ -15,13 +15,15 @@ export default function ROICalculator() {
   const missedRevenue = totalOpportunities * commission;
 
   const annualCost =
-    totalPastClients <= 20
-      ? 470
-      : totalPastClients <= 100
-        ? 1490
-        : totalPastClients <= 500
-          ? 2990
-          : 7990;
+    totalPastClients <= 10
+      ? 278
+      : totalPastClients <= 20
+        ? 470
+        : totalPastClients <= 100
+          ? 1490
+          : totalPastClients <= 500
+            ? 2990
+            : 7990;
 
   return (
     <section className="relative py-12 md:py-20 bg-gray-100">
@@ -142,7 +144,7 @@ export default function ROICalculator() {
               href="#pricing"
               className="inline-block bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              Stop Losing Money &rarr;
+              Start Getting Referrals &rarr;
             </a>
           </div>
         </motion.div>

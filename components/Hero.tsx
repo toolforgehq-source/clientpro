@@ -18,23 +18,23 @@ export default function Hero() {
           >
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
               <Star className="w-4 h-4 fill-primary" />
-              <span>Join 500+ agents who stay connected to past clients</span>
+              <span>Built for real estate agents who want more referrals</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-dark leading-tight mb-6">
               Never Lose Touch With a Past Client{" "}
               <span className="text-primary">Again</span>
             </h1>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-              Automated text messages that keep you top-of-mind. When
-              they&apos;re ready to buy again&mdash;or their friend needs an
-              agent&mdash;you get the call.
+              Your past clients will buy again&mdash;or refer someone who
+              will. Automated texts from your number keep you top-of-mind
+              so you get the call, not your competition.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <a
-                href="#pricing"
+                href="https://app.clientpro.io/register"
                 className="bg-primary text-white px-8 py-4 rounded-lg font-semibold text-center hover:bg-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
-                Start Building Your Pipeline &rarr;
+                Start Getting Referrals &rarr;
               </a>
               <a
                 href="#how-it-works"
@@ -116,9 +116,9 @@ export default function Hero() {
       <div className="relative bg-gray-100 mt-16 py-6">
         <div className="max-w-container mx-auto px-6 text-center">
           <p className="text-lg text-slate-700 font-medium">
-            <span className="text-primary font-bold">41%</span> of your business
-            should come from past clients. Most agents get less than{" "}
-            <span className="text-primary font-bold">10%</span>.
+            <span className="text-primary font-bold">41%</span> of agent business
+            comes from past clients &amp; referrals. Most agents get less than{" "}
+            <span className="text-primary font-bold">10%</span> because they never follow up.
           </p>
         </div>
       </div>

@@ -30,6 +30,7 @@ export default function Navigation() {
   const navLinks = [
     { href: "#how-it-works", label: "How It Works" },
     { href: "#pricing", label: "Pricing" },
+    { href: "/brokerages", label: "Brokerages" },
     { href: "#faq", label: "FAQ" },
   ];
 
@@ -73,7 +74,7 @@ export default function Navigation() {
             href="#pricing"
             className="bg-primary text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-primary-dark transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            Get Started
+            Start Getting Referrals
           </a>
         </div>
 
@@ -117,7 +118,7 @@ export default function Navigation() {
                 onClick={() => setMobileOpen(false)}
                 className="bg-primary text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary-dark transition-all duration-200 shadow-lg"
               >
-                Get Started
+                Start Getting Referrals
               </a>
             </div>
           </motion.div>
