@@ -188,7 +188,7 @@ export interface Message {
   message_text: string;
   message_type: string;
   status: string;
-  scheduled_date: string;
+  scheduled_for: string;
   sent_at?: string;
   client_first_name?: string;
   client_last_name?: string;

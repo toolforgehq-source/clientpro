@@ -64,7 +64,7 @@ export default function DashboardHome() {
     ...recentMessages.slice(0, 5).map((m) => ({
       type: "message_sent" as const,
       description: `Message sent to ${m.client_first_name} ${m.client_last_name} - ${m.message_type}`,
-      date: m.sent_at || m.scheduled_date,
+      date: m.sent_at || m.scheduled_for,
       link: `/dashboard/clients/${m.client_id}`,
     })),
     ...recentClients.slice(0, 5).map((c) => ({
