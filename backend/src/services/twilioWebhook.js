@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Client = require("../models/Client");
 const Message = require("../models/Message");
+const { getTwilioClient } = require("../config/twilio");
 const { sendReplyNotificationEmail } = require("./emailService");
 const logger = require("../utils/logger");
 
@@ -37,6 +38,20 @@ const handleIncomingSMS = async ({ From, To, Body, MessageSid }) => {
 
   const newScore = Math.min(100, (client.engagement_score || 50) + 10);
   await Client.updateEngagementScore(client.id, newScore);
+
+  const twilioClient = getTwilioClient();
+  if (twilioClient && agent.phone_number) {
+    try {
+      await twilioClient.messages.create({
+        from: To,
+        to: agent.phone_number,
+        body: `[ClientPro] ${client.first_name} ${client.last_name}: ${Body}`,
+      });
+      logger.info(`Forwarded SMS to agent ${agent.id} at ${agent.phone_number}`);
+    } catch (fwdErr) {
+      logger.error(`Failed to forward SMS to agent ${agent.id}:`, fwdErr.message);
+    }
+  }
 
   await sendReplyNotificationEmail(
     agent.email,

@@ -33,10 +33,13 @@ const provisionTwilioNumber = async (user, areaCode) => {
       available.push(anyAvailable[0]);
     }
 
+    const baseUrl = (process.env.TWILIO_WEBHOOK_URL || "").replace(/\/api\/twilio\/incoming$/, "");
     const purchased = await twilioClient.incomingPhoneNumbers.create({
       phoneNumber: available[0].phoneNumber,
       smsUrl: process.env.TWILIO_WEBHOOK_URL,
       smsMethod: "POST",
+      voiceUrl: `${baseUrl}/api/twilio/voice`,
+      voiceMethod: "POST",
     });
 
     await User.updateTwilio(user.id, {
