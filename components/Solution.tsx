@@ -14,7 +14,7 @@ const steps = [
     icon: MessageCircle,
     title: "We Keep You Top-of-Mind",
     description:
-      "Personalized texts go out from your number. Home tips, market updates, check-ins. Feels like you, not a robot.",
+      "Personalized texts go out from a dedicated local number matched to your area code. Home tips, market updates, check-ins. Feels like you, not a robot.",
   },
   {
     icon: PhoneCall,

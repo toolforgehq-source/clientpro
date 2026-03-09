@@ -6,9 +6,9 @@ import { Shield, Lock, MessageSquare, Zap, ArrowRight } from "lucide-react";
 const reasons = [
   {
     icon: MessageSquare,
-    title: "Texts From Your Number",
+    title: "Texts From Your Area Code",
     description:
-      "Messages come from a dedicated number that looks like yours. Clients reply directly to you. No generic marketing blasts.",
+      "You get a dedicated local number matched to your area code that forwards directly to your phone. Clients text and call you back—no generic marketing blasts.",
   },
   {
     icon: Zap,
@@ -25,9 +25,6 @@ const reasons = [
 ];
 
 const integrations = [
-  "Follow Up Boss",
-  "KVCore",
-  "LionDesk",
   "CSV Import",
 ];
 
@@ -87,22 +84,15 @@ export default function SocialProof() {
             Works With Your Existing Tools
           </h3>
           <p className="text-slate-600 mb-8 max-w-xl mx-auto">
-            Import clients via CSV today. Native CRM integrations launching soon.
+            Import your past clients via CSV and get started in minutes.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             {integrations.map((name, i) => (
               <div
                 key={i}
-                className={`px-5 py-2.5 rounded-lg text-sm font-medium ${
-                  name === "CSV Import"
-                    ? "bg-primary/10 text-primary border border-primary/20"
-                    : "bg-white text-slate-600 border border-slate-200"
-                }`}
+                className="px-5 py-2.5 rounded-lg text-sm font-medium bg-primary/10 text-primary border border-primary/20"
               >
                 {name}
-                {name !== "CSV Import" && (
-                  <span className="text-xs text-accent ml-2 font-semibold">Soon</span>
-                )}
               </div>
             ))}
           </div>
@@ -116,11 +106,11 @@ export default function SocialProof() {
           className="border border-primary/40 bg-primary/5 rounded-xl p-6 md:p-8 max-w-3xl mx-auto text-center mb-16"
         >
           <p className="text-dark text-lg font-medium mb-2">
-            Your past clients are getting texts from other agents right now.
+            Every day you wait, another agent is staying in touch with your past clients.
           </p>
           <p className="text-slate-600">
-            Every month you wait, you lose potential referrals and repeat business
-            to agents who stayed in touch. The best time to start was yesterday.
+            The average agent loses 2&ndash;3 referrals per year simply by not following up.
+            One text every few months is all it takes to stay top-of-mind.
           </p>
         </motion.div>
 
