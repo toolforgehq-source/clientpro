@@ -4,13 +4,30 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-const screenshots = [
+type ShowcaseItem = {
+  src: string;
+  alt: string;
+  label: string;
+  description: string;
+  type: "image" | "video";
+};
+
+const items: ShowcaseItem[] = [
+  {
+    src: "/screenshots/demo.mp4",
+    alt: "ClientPro product walkthrough demo video",
+    label: "Watch Demo",
+    description:
+      "A real walkthrough of the ClientPro dashboard — see how easy it is to manage clients and automated follow-up.",
+    type: "video",
+  },
   {
     src: "/screenshots/dashboard.png",
     alt: "ClientPro Dashboard — track clients, messages, replies, and referrals at a glance",
     label: "Dashboard",
     description:
       "See all your clients, scheduled messages, replies, and referrals in one place.",
+    type: "image",
   },
   {
     src: "/screenshots/clients.png",
@@ -18,6 +35,7 @@ const screenshots = [
     label: "Client Management",
     description:
       "Import past clients via CSV or add them manually. Every client gets automated, personalized follow-up.",
+    type: "image",
   },
   {
     src: "/screenshots/messages.png",
@@ -25,6 +43,7 @@ const screenshots = [
     label: "Message Schedule",
     description:
       "Preview every message before it sends. Edit the copy, reschedule, or let it go out automatically.",
+    type: "image",
   },
 ];
 
@@ -52,7 +71,7 @@ export default function ProductShowcase() {
 
         {/* Tab buttons */}
         <div className="flex justify-center gap-2 mb-8">
-          {screenshots.map((s, i) => (
+          {items.map((s, i) => (
             <button
               key={i}
               onClick={() => setActive(i)}
@@ -85,17 +104,28 @@ export default function ProductShowcase() {
               </span>
             </div>
             <div className="relative w-full aspect-[16/9]">
-              <Image
-                src={screenshots[active].src}
-                alt={screenshots[active].alt}
-                fill
-                className="object-cover object-top"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1024px"
-              />
+              {items[active].type === "video" ? (
+                <video
+                  src={items[active].src}
+                  controls
+                  autoPlay
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover object-top"
+                />
+              ) : (
+                <Image
+                  src={items[active].src}
+                  alt={items[active].alt}
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1024px"
+                />
+              )}
             </div>
           </div>
           <p className="text-center text-slate-600 mt-6 text-lg">
-            {screenshots[active].description}
+            {items[active].description}
           </p>
         </motion.div>
       </div>
