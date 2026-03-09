@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const twilio = require("twilio");
+const VoiceResponse = twilio.twiml.VoiceResponse;
 const { handleIncomingSMS } = require("../services/twilioWebhook");
+const User = require("../models/User");
 const logger = require("../utils/logger");
 
 const router = Router();
@@ -12,12 +14,15 @@ const validateTwilioSignature = (req, res, next) => {
   if (!authToken) return next();
 
   const signature = req.headers["x-twilio-signature"];
-  const url = process.env.TWILIO_WEBHOOK_URL;
+  const baseWebhookUrl = process.env.TWILIO_WEBHOOK_URL;
 
-  if (!signature || !url) {
+  if (!signature || !baseWebhookUrl) {
     logger.warn("Missing Twilio signature or webhook URL");
     return res.status(403).type("text/xml").send("<Response></Response>");
   }
+
+  const baseUrl = baseWebhookUrl.replace(/\/api\/twilio\/incoming$/, "");
+  const url = `${baseUrl}${req.originalUrl}`;
 
   const isValid = twilio.validateRequest(authToken, signature, url, req.body);
   if (!isValid) {
@@ -42,6 +47,32 @@ router.post("/incoming", validateTwilioSignature, async (req, res) => {
   } catch (err) {
     logger.error("Twilio webhook error:", err.message);
     res.type("text/xml").send("<Response></Response>");
+  }
+});
+
+router.post("/voice", validateTwilioSignature, async (req, res) => {
+  try {
+    const { To, From } = req.body;
+    const twiml = new VoiceResponse();
+
+    const agent = await User.findByTwilioNumber(To);
+    if (agent && agent.phone_number) {
+      twiml.dial(
+        { callerId: From },
+        agent.phone_number
+      );
+      logger.info(`Forwarding call from ${From} to agent ${agent.id} at ${agent.phone_number}`);
+    } else {
+      twiml.say("Sorry, this number is not currently available. Please try again later.");
+      logger.warn(`No agent found for voice call to ${To}`);
+    }
+
+    res.type("text/xml").send(twiml.toString());
+  } catch (err) {
+    logger.error("Twilio voice webhook error:", err.message);
+    const twiml = new VoiceResponse();
+    twiml.say("An error occurred. Please try again later.");
+    res.type("text/xml").send(twiml.toString());
   }
 });
 
