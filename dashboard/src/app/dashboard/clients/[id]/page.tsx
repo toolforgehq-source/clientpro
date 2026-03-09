@@ -150,7 +150,7 @@ export default function ClientDetailPage() {
   if (!client) return null;
 
   const sortedMessages = [...messages].sort(
-    (a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime()
+    (a, b) => new Date(a.scheduled_for).getTime() - new Date(b.scheduled_for).getTime()
   );
 
   return (
@@ -257,8 +257,8 @@ export default function ClientDetailPage() {
                         <div className="mt-2 flex items-center justify-between">
                           <span className="text-xs text-gray-400">
                             {isSent
-                              ? `Sent ${formatDate(msg.sent_at || msg.scheduled_date)}`
-                              : `Scheduled ${formatDate(msg.scheduled_date)}`}
+                              ? `Sent ${formatDate(msg.sent_at || msg.scheduled_for)}`
+                              : `Scheduled ${formatDate(msg.scheduled_for)}`}
                           </span>
                           {!isSent && !isFailed && msg.status !== "cancelled" && (
                             <Button

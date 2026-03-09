@@ -89,11 +89,11 @@ function MessagesContent() {
     nextWeekEnd.setDate(thisWeekEnd.getDate() + 7);
 
     msgs.forEach((msg) => {
-      const date = new Date(msg.scheduled_date);
+      const date = new Date(msg.scheduled_for);
       let group: string;
       if (date <= thisWeekEnd) group = "This Week";
       else if (date <= nextWeekEnd) group = "Next Week";
-      else group = formatDate(msg.scheduled_date);
+      else group = formatDate(msg.scheduled_for);
 
       if (!groups[group]) groups[group] = [];
       groups[group].push(msg);
@@ -181,7 +181,7 @@ function MessagesContent() {
                           {msg.message_text}
                         </p>
                         <p className="mt-2 text-xs text-gray-400">
-                          Scheduled {formatDate(msg.scheduled_date)} ({formatRelativeDate(msg.scheduled_date)})
+                          Scheduled {formatDate(msg.scheduled_for)} ({formatRelativeDate(msg.scheduled_for)})
                         </p>
                       </div>
                       <div className="flex items-center gap-2 ml-4">
@@ -233,7 +233,7 @@ function MessagesContent() {
                     {msg.message_text}
                   </p>
                   <p className="mt-2 text-xs text-gray-400">
-                    Sent {formatDate(msg.sent_at || msg.scheduled_date)}
+                    Sent {formatDate(msg.sent_at || msg.scheduled_for)}
                   </p>
                 </div>
               </div>
