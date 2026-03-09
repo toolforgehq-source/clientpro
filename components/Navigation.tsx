@@ -95,21 +95,22 @@ export default function Navigation() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 top-16 bg-white z-40 md:hidden"
           >
-            <div className="flex flex-col items-center justify-center gap-8 pt-20">
+            <div className="flex flex-col items-center justify-center gap-6 pt-16">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-2xl font-semibold text-dark hover:text-primary transition-colors"
+                  className="text-xl font-semibold text-dark hover:text-primary transition-colors"
                 >
                   {link.label}
                 </a>
               ))}
+              <div className="h-px w-16 bg-slate-200" />
               <a
                 href="https://app.clientpro.io/login"
                 onClick={() => setMobileOpen(false)}
-                className="text-xl font-medium text-dark hover:text-primary transition-colors"
+                className="text-lg font-medium text-dark hover:text-primary transition-colors"
               >
                 Login
               </a>

@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 import { formatCurrency } from "@/lib/utils";
 
 export default function ROICalculator() {
-  const [deals, setDeals] = useState(12);
-  const [commission, setCommission] = useState(9000);
+  const [deals, setDeals] = useState(8);
+  const [commission, setCommission] = useState(7500);
 
   const totalPastClients = deals * 3;
   const repeatClients = Math.round(totalPastClients * 0.2);

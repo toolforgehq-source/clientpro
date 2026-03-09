@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Problem from "@/components/Problem";
 import Solution from "@/components/Solution";
 import Features from "@/components/Features";
+import ProductShowcase from "@/components/ProductShowcase";
 import ROICalculator from "@/components/ROICalculator";
 import SocialProof from "@/components/SocialProof";
 import Pricing from "@/components/Pricing";
@@ -20,6 +21,7 @@ export default function Home() {
         <Problem />
         <Solution />
         <Features />
+        <ProductShowcase />
         <ROICalculator />
         <SocialProof />
         <Pricing />

@@ -26,8 +26,9 @@ export default function Hero() {
             </h1>
             <p className="text-lg text-slate-600 mb-8 leading-relaxed">
               Your past clients will buy again&mdash;or refer someone who
-              will. Automated texts from your number keep you top-of-mind
-              so you get the call, not your competition.
+              will. Automated texts from a dedicated local number matched to
+              your area code keep you top-of-mind so you get the call, not
+              your competition.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <a
