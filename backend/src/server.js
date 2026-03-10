@@ -69,6 +69,12 @@ cron.schedule("0 2 * * *", () => {
   updateEngagementScores();
 });
 
+// Run database migrations on startup
+const migrateConstraints = require("./scripts/migrateConstraints");
+migrateConstraints().catch((err) => {
+  logger.error("Startup migration failed (non-fatal):", err.message);
+});
+
 app.listen(PORT, () => {
   logger.info(`ClientPro API running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);

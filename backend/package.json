@@ -6,6 +6,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "db:setup": "node src/scripts/setupDatabase.js",
+    "db:migrate": "node -e \"require('./src/scripts/migrateConstraints')()\"",
     "stripe:setup": "node src/scripts/setupStripe.js",
     "lint": "echo 'No linter configured'"
   },
