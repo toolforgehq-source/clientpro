@@ -11,8 +11,8 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  { href: "mailto:support@clientpro.io", label: "Contact" },
-  { href: "mailto:support@clientpro.io", label: "Support" },
+  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: "Support" },
 ];
 
 const legalLinks = [
