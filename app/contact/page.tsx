@@ -42,10 +42,12 @@ export default function ContactPage() {
 
       setSubmitted(true);
     } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "";
       setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to send message. Please try again."
+        message.includes("fetch") || message.includes("network") || !message
+          ? "Unable to send your message right now. Please try again or email us at support@clientpro.io."
+          : message
       );
     } finally {
       setSubmitting(false);
