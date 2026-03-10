@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,6 +31,9 @@ type FormData = z.infer<typeof schema>;
 
 export default function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedTier = searchParams.get("tier") || "starter";
+  const billingCycle = searchParams.get("billing") || "monthly";
   const { register: registerUser } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -63,20 +66,25 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-    const error = await registerUser({
+    const result = await registerUser({
       email: data.email,
       password: data.password,
       first_name: data.first_name,
       last_name: data.last_name,
       phone_number: toE164(data.phone_number),
       company_name: data.company_name || undefined,
+      tier: selectedTier,
+      billing_cycle: billingCycle,
     });
     setLoading(false);
-    if (error) {
-      toast("error", error);
+    if (result.error) {
+      toast("error", result.error);
+    } else if (result.checkout_url) {
+      // Redirect to Stripe checkout to complete payment
+      window.location.href = result.checkout_url;
     } else {
-      toast("success", "Welcome to ClientPro! Add your first client to get started.");
-      router.push("/");
+      // Fallback: if no checkout URL (e.g. Stripe not configured), go to subscribe page
+      router.push("/subscribe");
     }
   };
 

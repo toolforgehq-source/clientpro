@@ -8,6 +8,7 @@ const Message = require("../models/Message");
 const auth = require("../middleware/auth");
 const { TIER_LIMITS } = require("../middleware/validateTier");
 const { getTwilioClient } = require("../config/twilio");
+const { getStripeClient, STRIPE_PRODUCTS, findStripePriceId } = require("../config/stripe");
 const { sendWelcomeEmail, sendPasswordResetEmail } = require("../services/emailService");
 const { validateEmail, validatePassword, validatePhone } = require("../utils/validation");
 const logger = require("../utils/logger");
@@ -64,6 +65,8 @@ router.post(
     body("last_name").trim().notEmpty().withMessage("Last name required"),
     validatePhone(),
     body("company_name").optional().trim(),
+    body("tier").optional().isIn(["solo", "starter", "professional", "elite", "team", "brokerage"]),
+    body("billing_cycle").optional().isIn(["monthly", "annual"]),
   ],
   async (req, res, next) => {
     try {
@@ -77,6 +80,10 @@ router.post(
         return res.status(409).json({ error: { message: "Email already registered", code: "EMAIL_EXISTS" } });
       }
 
+      const selectedTier = req.body.tier || "starter";
+      const billingCycle = req.body.billing_cycle || "monthly";
+      const isTeamInvite = req.query.team && req.query.role;
+
       const createData = {
         email: req.body.email,
         password: req.body.password,
@@ -84,9 +91,10 @@ router.post(
         last_name: req.body.last_name,
         phone_number: req.body.phone_number,
         company_name: req.body.company_name,
+        subscription_tier: selectedTier,
       };
 
-      if (req.query.team && req.query.role) {
+      if (isTeamInvite) {
         const parentUser = await User.findById(req.query.team);
         if (parentUser && (parentUser.subscription_tier === "team" || parentUser.subscription_tier === "brokerage")) {
           const teamMembers = await User.getTeamMembers(parentUser.id);
@@ -108,14 +116,68 @@ router.post(
 
       await sendWelcomeEmail(user.email, user.first_name);
 
+      // For team invites, skip checkout — they're covered by the parent's subscription
+      if (isTeamInvite) {
+        await User.updateSubscription(user.id, { subscription_status: "active" });
+        return res.status(201).json({
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            subscription_tier: user.subscription_tier,
+            subscription_status: "active",
+            twilio_phone_number: twilioNumber,
+            twilio_provisioned: !!twilioNumber,
+          },
+        });
+      }
+
+      // Create Stripe checkout session for the selected tier
+      let checkout_url = null;
+      const stripe = getStripeClient();
+      if (stripe) {
+        try {
+          const customer = await stripe.customers.create({
+            email: user.email,
+            name: `${user.first_name} ${user.last_name}`,
+            metadata: { user_id: user.id },
+          });
+          await User.updateSubscription(user.id, { stripe_customer_id: customer.id });
+
+          const priceId = await findStripePriceId(stripe, selectedTier, billingCycle);
+          if (priceId) {
+            const session = await stripe.checkout.sessions.create({
+              customer: customer.id,
+              mode: "subscription",
+              line_items: [{ price: priceId, quantity: 1 }],
+              success_url: `${process.env.FRONTEND_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+              cancel_url: `${process.env.FRONTEND_URL}/subscribe`,
+              metadata: { user_id: user.id, tier: selectedTier },
+            });
+            checkout_url = session.url;
+          } else {
+            logger.warn(`No Stripe price found for tier ${selectedTier} / ${billingCycle}. User ${user.id} created without checkout.`);
+          }
+        } catch (stripeErr) {
+          logger.error("Failed to create Stripe checkout session during registration:", stripeErr.message);
+        }
+      }
+
+      // Set status to pending until payment completes (webhook will set to active)
+      await User.updateSubscription(user.id, { subscription_status: "pending" });
+
       res.status(201).json({
         token,
+        checkout_url,
         user: {
           id: user.id,
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
           subscription_tier: user.subscription_tier,
+          subscription_status: "pending",
           twilio_phone_number: twilioNumber,
           twilio_provisioned: !!twilioNumber,
         },

@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { body, validationResult } = require("express-validator");
-const { getStripeClient, STRIPE_PRODUCTS } = require("../config/stripe");
+const { getStripeClient, STRIPE_PRODUCTS, findStripePriceId } = require("../config/stripe");
 const User = require("../models/User");
 const auth = require("../middleware/auth");
 const logger = require("../utils/logger");
@@ -11,8 +11,8 @@ router.post(
   "/create-checkout-session",
   auth,
   [
-    body("tier").isIn(["starter", "professional", "elite", "team", "brokerage"]).withMessage("Valid tier required"),
-    body("billing_cycle").isIn(["monthly", "annual"]).withMessage("Valid billing cycle required"),
+    body("tier").isIn(["solo", "starter", "professional", "elite", "team", "brokerage"]).withMessage("Valid tier required"),
+    body("billing_cycle").optional().isIn(["monthly", "annual"]).withMessage("Valid billing cycle required"),
   ],
   async (req, res, next) => {
     try {
@@ -26,7 +26,8 @@ router.post(
         return res.status(503).json({ error: { message: "Payment system not configured", code: "STRIPE_NOT_CONFIGURED" } });
       }
 
-      const { tier, billing_cycle } = req.body;
+      const { tier, billing_cycle: bc, interval } = req.body;
+      const billing_cycle = bc || interval || "monthly";
       const user = req.user;
 
       let customerId = user.stripe_customer_id;
@@ -54,7 +55,7 @@ router.post(
         metadata: { user_id: user.id, tier },
       });
 
-      res.json({ checkout_url: session.url });
+      res.json({ url: session.url, checkout_url: session.url });
     } catch (err) {
       next(err);
     }
@@ -86,7 +87,7 @@ router.get("/portal", auth, async (req, res, next) => {
 router.post(
   "/change-plan",
   auth,
-  [body("new_tier").isIn(["starter", "professional", "elite", "team", "brokerage"]).withMessage("Valid tier required")],
+  [body("new_tier").isIn(["solo", "starter", "professional", "elite", "team", "brokerage"]).withMessage("Valid tier required")],
   async (req, res, next) => {
     try {
       const errors = validationResult(req);
@@ -195,19 +196,5 @@ router.post("/webhook", async (req, res) => {
 
   res.status(200).json({ received: true });
 });
-
-async function findStripePriceId(stripe, tier, billingCycle) {
-  const product = STRIPE_PRODUCTS.find((p) => p.tier === tier);
-  if (!product) return null;
-
-  const prices = await stripe.prices.list({ active: true, limit: 100 });
-  const interval = billingCycle === "annual" ? "year" : "month";
-  const amount = billingCycle === "annual" ? product.price_annual : product.price_monthly;
-
-  const match = prices.data.find(
-    (p) => p.unit_amount === amount && p.recurring && p.recurring.interval === interval
-  );
-  return match ? match.id : null;
-}
 
 module.exports = router;

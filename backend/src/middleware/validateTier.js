@@ -1,6 +1,7 @@
 const { query } = require("../config/database");
 
 const TIER_LIMITS = {
+  solo: { max_clients: 10 },
   starter: { max_clients: 20 },
   professional: { max_clients: 100 },
   elite: { max_clients: 500 },

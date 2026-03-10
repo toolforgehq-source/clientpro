@@ -1,6 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
 import RegisterForm from "@/components/auth/RegisterForm";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function RegisterPage() {
   return (
@@ -45,7 +47,9 @@ export default function RegisterPage() {
             <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
             <p className="mt-1 text-gray-500">Start automating client follow-up</p>
           </div>
-          <RegisterForm />
+          <Suspense fallback={<LoadingSpinner text="Loading..." />}>
+            <RegisterForm />
+          </Suspense>
         </div>
       </div>
     </div>
