@@ -107,6 +107,7 @@ export const PROPERTY_TYPE_LABELS: Record<string, string> = {
 };
 
 export const TIER_LABELS: Record<string, string> = {
+  solo: "Solo",
   starter: "Starter",
   professional: "Professional",
   elite: "Elite",
@@ -115,6 +116,7 @@ export const TIER_LABELS: Record<string, string> = {
 };
 
 export const TIER_PRICES: Record<string, { monthly: number; annual: number }> = {
+  solo: { monthly: 29, annual: 278 },
   starter: { monthly: 49, annual: 470 },
   professional: { monthly: 149, annual: 1490 },
   elite: { monthly: 299, annual: 2990 },
@@ -123,6 +125,7 @@ export const TIER_PRICES: Record<string, { monthly: number; annual: number }> = 
 };
 
 export const TIER_CLIENT_LIMITS: Record<string, number | string> = {
+  solo: 10,
   starter: 20,
   professional: 100,
   elite: 500,

@@ -86,7 +86,9 @@ export const api = {
       last_name: string;
       phone_number: string;
       company_name?: string;
-    }) => POST<{ token: string; user: User }>("/api/auth/register", data),
+      tier?: string;
+      billing_cycle?: string;
+    }) => POST<{ token: string; user: User; checkout_url?: string }>("/api/auth/register", data),
     login: (data: { email: string; password: string }) =>
       POST<{ token: string; user: User }>("/api/auth/login", data),
     me: () => GET<{ user: User; usage: Usage }>("/api/auth/me"),
@@ -127,8 +129,8 @@ export const api = {
       PUT<{ referral: Referral }>(`/api/referrals/${id}`, data),
   },
   billing: {
-    createCheckout: (tier: string, interval?: string) =>
-      POST<{ url: string }>("/api/billing/create-checkout-session", { tier, interval }),
+    createCheckout: (tier: string, billing_cycle?: string) =>
+      POST<{ url: string }>("/api/billing/create-checkout-session", { tier, billing_cycle: billing_cycle || "monthly" }),
     portal: () => GET<{ url: string }>("/api/billing/portal"),
   },
   analytics: {

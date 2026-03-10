@@ -13,6 +13,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
+    } else if (!loading && user && user.subscription_status !== "active") {
+      router.push("/subscribe");
     }
   }, [user, loading, router]);
 
@@ -25,6 +27,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   if (!user) return null;
+  if (user.subscription_status !== "active") return null;
 
   return (
     <div className="min-h-screen bg-gray-50">

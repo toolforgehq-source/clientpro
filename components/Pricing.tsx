@@ -18,7 +18,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "https://app.clientpro.io/register",
+    href: "https://app.clientpro.io/register?tier=solo",
     popular: false,
   },
   {
@@ -34,7 +34,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "https://app.clientpro.io/register",
+    href: "https://app.clientpro.io/register?tier=starter",
     popular: false,
   },
   {
@@ -50,7 +50,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "https://app.clientpro.io/register",
+    href: "https://app.clientpro.io/register?tier=professional",
     popular: true,
   },
   {
@@ -67,7 +67,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "https://app.clientpro.io/register",
+    href: "https://app.clientpro.io/register?tier=elite",
     popular: false,
   },
   {
@@ -83,7 +83,7 @@ const plans = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "https://app.clientpro.io/register",
+    href: "https://app.clientpro.io/register?tier=team",
     popular: false,
   },
   {

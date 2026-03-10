@@ -15,7 +15,9 @@ interface AuthContextType {
     last_name: string;
     phone_number: string;
     company_name?: string;
-  }) => Promise<string | null>;
+    tier?: string;
+    billing_cycle?: string;
+  }) => Promise<{ error: string | null; checkout_url?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<string | null>;
   refreshUser: () => Promise<void>;
@@ -69,13 +71,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     last_name: string;
     phone_number: string;
     company_name?: string;
-  }): Promise<string | null> => {
+    tier?: string;
+    billing_cycle?: string;
+  }): Promise<{ error: string | null; checkout_url?: string }> => {
     const { data: result, error } = await api.auth.register(data);
-    if (error || !result) return error || "Registration failed";
+    if (error || !result) return { error: error || "Registration failed" };
     localStorage.setItem("token", result.token);
     setUser(result.user);
     await refreshUser();
-    return null;
+    return { error: null, checkout_url: result.checkout_url || undefined };
   };
 
   const logout = () => {
