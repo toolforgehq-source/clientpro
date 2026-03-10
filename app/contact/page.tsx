@@ -11,6 +11,8 @@ export default function ContactPage() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -18,15 +20,36 @@ export default function ContactPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
+    setError("");
 
-    const subject = encodeURIComponent("Contact Form Submission");
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-    );
-    window.location.href = `mailto:support@clientpro.io?subject=${subject}&body=${body}`;
-    setSubmitted(true);
+    try {
+      const res = await fetch(
+        "https://clientpro-api.onrender.com/api/contact",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send message. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -68,14 +91,8 @@ export default function ContactPage() {
               Message sent!
             </h2>
             <p className="text-slate-600 mb-6">
-              Your email client should have opened with your message. If it
-              didn&apos;t, you can reach us directly at{" "}
-              <a
-                href="mailto:support@clientpro.io"
-                className="text-primary hover:underline"
-              >
-                support@clientpro.io
-              </a>
+              Thanks for reaching out! We&apos;ll get back to you within 24
+              hours at the email you provided.
             </p>
             <button
               onClick={() => {
@@ -146,11 +163,18 @@ export default function ContactPage() {
               />
             </div>
 
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              disabled={submitting}
+              className="w-full bg-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             >
-              Send Message
+              {submitting ? "Sending..." : "Send Message"}
             </button>
           </form>
         )}

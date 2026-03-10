@@ -14,6 +14,7 @@ const billingRoutes = require("./routes/billing");
 const teamRoutes = require("./routes/team");
 const analyticsRoutes = require("./routes/analytics");
 const twilioRoutes = require("./routes/twilio");
+const contactRoutes = require("./routes/contact");
 
 const sendScheduledMessages = require("./jobs/sendScheduledMessages");
 const updateEngagementScores = require("./jobs/updateEngagementScores");
@@ -30,7 +31,11 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      (origin && origin.endsWith(".vercel.app"))
+    ) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -56,6 +61,7 @@ app.use("/api/billing", billingRoutes);
 app.use("/api/team", teamRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/twilio", twilioRoutes);
+app.use("/api/contact", contactRoutes);
 
 app.use(errorHandler);
 
