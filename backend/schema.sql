@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS users (
   phone_number TEXT NOT NULL,
   company_name TEXT,
   subscription_tier TEXT NOT NULL DEFAULT 'starter'
-    CHECK (subscription_tier IN ('starter', 'professional', 'elite', 'team', 'brokerage')),
-  subscription_status TEXT NOT NULL DEFAULT 'active'
-    CHECK (subscription_status IN ('active', 'past_due', 'cancelled')),
+    CHECK (subscription_tier IN ('solo', 'starter', 'professional', 'elite', 'team', 'brokerage')),
+  subscription_status TEXT NOT NULL DEFAULT 'pending'
+    CHECK (subscription_status IN ('pending', 'active', 'past_due', 'cancelled')),
   stripe_customer_id TEXT UNIQUE,
   stripe_subscription_id TEXT UNIQUE,
   twilio_phone_number TEXT UNIQUE,
