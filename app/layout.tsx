@@ -27,12 +27,21 @@ export const metadata: Metadata = {
     siteName: "ClientPro",
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "https://clientpro.io/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ClientPro - Automated Past-Client Follow-Up for Real Estate Agents",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ClientPro - Automated Past-Client Follow-Up for Real Estate Agents",
     description:
       "Your past clients will buy again or refer someone who will. Automated texts keep you top-of-mind. Setup in 2 minutes.",
+    images: ["https://clientpro.io/og-image.png"],
   },
   robots: {
     index: true,

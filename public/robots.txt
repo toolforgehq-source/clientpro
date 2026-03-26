@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://clientpro.io/sitemap.xml
