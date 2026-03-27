@@ -90,6 +90,13 @@ const Message = {
     return result.rows[0];
   },
 
+  async markConversationRead(clientId, agentId) {
+    await query(
+      "UPDATE messages SET is_read = true, updated_at = now() WHERE client_id = $1 AND agent_id = $2 AND status = 'replied' AND is_read = false",
+      [clientId, agentId]
+    );
+  },
+
   async cancel(id) {
     const result = await query(
       "UPDATE messages SET status = 'cancelled', updated_at = now() WHERE id = $1 AND status = 'scheduled' RETURNING *",

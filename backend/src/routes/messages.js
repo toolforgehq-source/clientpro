@@ -119,12 +119,8 @@ router.get("/conversation/:clientId", auth, async (req, res, next) => {
 
     const messages = await Message.findConversation(req.params.clientId, req.user.id);
 
-    // Mark all unread replies in this conversation as read
-    for (const msg of messages) {
-      if (msg.status === "replied" && !msg.is_read) {
-        await Message.markRead(msg.id);
-      }
-    }
+    // Batch mark all unread replies in this conversation as read
+    await Message.markConversationRead(req.params.clientId, req.user.id);
 
     res.json({
       client: {
@@ -162,7 +158,11 @@ router.post(
       }
 
       const agent = await User.findById(req.user.id);
-      if (!agent || !agent.twilio_phone_number) {
+      if (!agent || agent.subscription_status !== "active") {
+        return res.status(403).json({ error: { message: "Active subscription required to send replies", code: "SUBSCRIPTION_INACTIVE" } });
+      }
+
+      if (!agent.twilio_phone_number) {
         return res.status(400).json({ error: { message: "No Twilio phone number configured. Please set up your phone number in Settings.", code: "NO_TWILIO" } });
       }
 
