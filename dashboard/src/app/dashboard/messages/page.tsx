@@ -61,12 +61,12 @@ function MessagesContent() {
               client_last_name: msg.client_last_name || "",
               latest_reply_text: msg.reply_text || "",
               latest_reply_at: msg.reply_at || "",
-              has_unread: !msg.reply_read,
+              has_unread: !msg.is_read,
               reply_count: 1,
             });
           } else {
             existing.reply_count++;
-            if (!msg.reply_read) existing.has_unread = true;
+            if (!msg.is_read) existing.has_unread = true;
           }
         }
         setConversations(Array.from(clientMap.values()));
