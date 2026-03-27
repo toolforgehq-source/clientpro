@@ -124,6 +124,24 @@ const Client = {
     const result = await query("SELECT * FROM clients WHERE is_active = true");
     return result.rows;
   },
+
+  async findActiveByAgent(agentId) {
+    const result = await query(
+      "SELECT id, first_name, last_name, phone_number FROM clients WHERE agent_id = $1 AND is_active = true ORDER BY first_name ASC, last_name ASC",
+      [agentId]
+    );
+    return result.rows;
+  },
+
+  async findByIdsAndAgent(ids, agentId) {
+    if (!ids || ids.length === 0) return [];
+    const placeholders = ids.map((_, i) => `$${i + 2}`).join(", ");
+    const result = await query(
+      `SELECT id, first_name, last_name, phone_number FROM clients WHERE agent_id = $1 AND is_active = true AND id IN (${placeholders})`,
+      [agentId, ...ids]
+    );
+    return result.rows;
+  },
 };
 
 module.exports = Client;

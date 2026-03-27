@@ -120,6 +120,8 @@ export const api = {
     update: (id: string, data: { message_text: string }) =>
       PUT<{ message: Message }>(`/api/messages/${id}`, data),
     cancel: (id: string) => DELETE<{ message: string }>(`/api/messages/${id}`),
+    sendCustom: (data: { message_text: string; client_ids?: string[]; send_to_all?: boolean }) =>
+      POST<{ message: string; count: number }>("/api/messages/custom", data),
   },
   referrals: {
     list: (params?: { page?: number; limit?: number }) =>

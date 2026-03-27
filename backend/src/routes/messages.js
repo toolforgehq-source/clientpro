@@ -1,10 +1,70 @@
 const { Router } = require("express");
 const { body, validationResult } = require("express-validator");
 const Message = require("../models/Message");
+const Client = require("../models/Client");
 const auth = require("../middleware/auth");
 const { validatePagination } = require("../utils/validation");
+const logger = require("../utils/logger");
 
 const router = Router();
+
+// Send a custom message to one, multiple, or all clients
+router.post(
+  "/custom",
+  auth,
+  [
+    body("message_text").trim().notEmpty().withMessage("Message text is required").isLength({ max: 320 }).withMessage("Message text must be 320 characters or less"),
+    body("client_ids").optional().isArray().withMessage("client_ids must be an array"),
+    body("send_to_all").optional().isBoolean().withMessage("send_to_all must be a boolean"),
+  ],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ error: { message: "Validation failed", code: "VALIDATION", details: errors.array() } });
+      }
+
+      const { message_text, client_ids, send_to_all } = req.body;
+
+      if (!send_to_all && (!client_ids || client_ids.length === 0)) {
+        return res.status(400).json({ error: { message: "Select at least one client or send to all", code: "NO_RECIPIENTS" } });
+      }
+
+      let clients;
+      if (send_to_all) {
+        clients = await Client.findActiveByAgent(req.user.id);
+      } else {
+        clients = await Client.findByIdsAndAgent(client_ids, req.user.id);
+        if (clients.length === 0) {
+          return res.status(400).json({ error: { message: "No valid clients found", code: "NO_VALID_CLIENTS" } });
+        }
+      }
+
+      if (clients.length === 0) {
+        return res.status(400).json({ error: { message: "No active clients to message", code: "NO_CLIENTS" } });
+      }
+
+      // Schedule messages for immediate delivery (next cron tick)
+      const scheduledFor = new Date().toISOString();
+      let created = 0;
+
+      for (const client of clients) {
+        await Message.create({
+          client_id: client.id,
+          agent_id: req.user.id,
+          message_text,
+          scheduled_for: scheduledFor,
+        });
+        created++;
+      }
+
+      logger.info(`Agent ${req.user.id} sent custom message to ${created} client(s)`);
+      res.status(201).json({ message: `Custom message scheduled for ${created} client(s)`, count: created });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.get("/", auth, validatePagination, async (req, res, next) => {
   try {
