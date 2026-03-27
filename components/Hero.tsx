@@ -38,10 +38,10 @@ export default function Hero() {
                 Start Getting Referrals &rarr;
               </a>
               <a
-                href="#how-it-works"
+                href="https://app.clientpro.io/demo"
                 className="border-2 border-primary text-primary px-8 py-4 rounded-lg font-semibold text-center hover:bg-primary hover:text-white transition-all duration-200"
               >
-                See How It Works &darr;
+                See Demo Dashboard &rarr;
               </a>
             </div>
             <div className="flex items-center gap-4 text-sm text-slate-500">

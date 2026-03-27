@@ -65,6 +65,12 @@ export default function Navigation() {
 
         <div className="hidden md:flex items-center gap-4">
           <a
+            href="https://app.clientpro.io/demo"
+            className="text-sm font-medium text-dark hover:text-primary transition-colors"
+          >
+            See Demo
+          </a>
+          <a
             href="https://app.clientpro.io/login"
             className="text-sm font-medium text-dark hover:text-primary transition-colors"
           >
@@ -107,6 +113,13 @@ export default function Navigation() {
                 </a>
               ))}
               <div className="h-px w-16 bg-slate-200" />
+              <a
+                href="https://app.clientpro.io/demo"
+                onClick={() => setMobileOpen(false)}
+                className="text-lg font-medium text-dark hover:text-primary transition-colors"
+              >
+                See Demo
+              </a>
               <a
                 href="https://app.clientpro.io/login"
                 onClick={() => setMobileOpen(false)}
