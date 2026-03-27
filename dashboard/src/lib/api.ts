@@ -205,7 +205,7 @@ export interface Message {
   client_phone_number?: string;
   reply_text?: string;
   reply_at?: string;
-  reply_read?: boolean;
+  is_read?: boolean;
 }
 
 export interface Referral {

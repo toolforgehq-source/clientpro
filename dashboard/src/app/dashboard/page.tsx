@@ -38,7 +38,7 @@ export default function DashboardHome() {
       if (messagesRes.data) {
         setRecentMessages(messagesRes.data.messages || []);
         const replies = (messagesRes.data.messages || []).filter(
-          (m) => m.reply_text && !m.reply_read
+          (m) => m.reply_text && !m.is_read
         );
         setReplyCount(replies.length);
       }
