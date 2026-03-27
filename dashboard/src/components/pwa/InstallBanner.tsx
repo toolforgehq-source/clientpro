@@ -222,7 +222,7 @@ export default function InstallBanner() {
 
   // Compact banner
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-lg animate-in slide-in-from-bottom">
+    <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-lg transition-all duration-300">
       <div className="rounded-2xl bg-white border border-gray-200 p-4 shadow-lg">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 shrink-0 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
