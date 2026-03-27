@@ -119,7 +119,7 @@ const softwareJsonLd = {
   "@type": "SoftwareApplication",
   name: "ClientPro",
   applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
+  operatingSystem: "Web, iOS, Android",
   url: "https://clientpro.io",
   description:
     "Automated past-client follow-up via SMS for real estate agents. Get more referrals and repeat business.",

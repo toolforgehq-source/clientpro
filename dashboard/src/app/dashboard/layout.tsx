@@ -4,11 +4,14 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Sidebar from "@/components/dashboard/Sidebar";
+import InstallBanner from "@/components/pwa/InstallBanner";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useServiceWorker } from "@/hooks/useServiceWorker";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  useServiceWorker();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -37,6 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </div>
       </main>
+      <InstallBanner />
     </div>
   );
 }

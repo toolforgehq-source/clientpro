@@ -10,6 +10,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Modal from "@/components/ui/Modal";
+import InstallInstructions from "@/components/pwa/InstallInstructions";
 import { TIER_LABELS, TIER_PRICES, TIER_CLIENT_LIMITS, formatPhone, toE164 } from "@/lib/utils";
 
 function SettingsContent() {
@@ -17,7 +18,7 @@ function SettingsContent() {
   const initialTab = searchParams.get("tab") || "profile";
   const { user, usage, updateProfile } = useAuth();
   const { toast } = useToast();
-  const [tab, setTab] = useState<"profile" | "billing">(initialTab as "profile" | "billing");
+  const [tab, setTab] = useState<"profile" | "billing" | "app">(initialTab as "profile" | "billing" | "app");
 
   const [profileForm, setProfileForm] = useState({
     first_name: user?.first_name || "",
@@ -102,9 +103,42 @@ function SettingsContent() {
         >
           Billing
         </button>
+        <button
+          onClick={() => setTab("app")}
+          className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            tab === "app" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Install App
+        </button>
       </div>
 
-      {tab === "profile" ? (
+      {tab === "app" ? (
+        <div className="max-w-2xl space-y-8">
+          <InstallInstructions />
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-2 text-lg font-semibold text-gray-900">Why install?</h2>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                <span>Quick access from your home screen — no need to open a browser</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                <span>Full-screen experience — looks and feels like a native app</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                <span>Faster loading — pages are cached for instant access</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                <span>Works on iPhone, Android, and desktop</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      ) : tab === "profile" ? (
         <div className="max-w-2xl space-y-8">
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-gray-900">Account Information</h2>
