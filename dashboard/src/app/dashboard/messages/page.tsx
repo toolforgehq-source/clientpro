@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MessageSquare, Clock, CheckCircle, MessageCircle } from "lucide-react";
+import { MessageSquare, Clock, CheckCircle, MessageCircle, Send } from "lucide-react";
 import { api, Message } from "@/lib/api";
 import { useToast } from "@/components/ui/Toast";
 import Header from "@/components/dashboard/Header";
@@ -11,6 +11,7 @@ import Badge from "@/components/ui/Badge";
 import Modal from "@/components/ui/Modal";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
+import CustomMessageModal from "@/components/dashboard/CustomMessageModal";
 import { formatDate, formatRelativeDate, getStatusColor } from "@/lib/utils";
 
 function MessagesContent() {
@@ -29,6 +30,7 @@ function MessagesContent() {
   const [saving, setSaving] = useState(false);
   const [cancelModal, setCancelModal] = useState<Message | null>(null);
   const [cancelling, setCancelling] = useState(false);
+  const [customMessageOpen, setCustomMessageOpen] = useState(false);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -112,6 +114,13 @@ function MessagesContent() {
   return (
     <div>
       <Header title="Messages" />
+
+      <div className="mb-4 flex justify-end">
+        <Button onClick={() => setCustomMessageOpen(true)}>
+          <Send className="mr-2 h-4 w-4" />
+          Send Custom Message
+        </Button>
+      </div>
 
       <div className="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
         {tabs.map((t) => {
@@ -317,6 +326,30 @@ function MessagesContent() {
           <Button variant="danger" loading={cancelling} onClick={handleCancel}>Cancel Message</Button>
         </div>
       </Modal>
+
+      <CustomMessageModal
+        open={customMessageOpen}
+        onClose={() => setCustomMessageOpen(false)}
+        onSent={() => {
+          // Refresh messages list after sending
+          const fetchMessages = async () => {
+            setLoading(true);
+            let status: string | undefined;
+            if (tab === "upcoming") status = "scheduled";
+            else if (tab === "sent") status = "sent";
+            const { data } = await api.messages.list({ status, limit: 100 });
+            if (data) {
+              let filtered = data.messages || [];
+              if (tab === "replies") {
+                filtered = filtered.filter((m) => m.reply_text);
+              }
+              setMessages(filtered);
+            }
+            setLoading(false);
+          };
+          fetchMessages();
+        }}
+      />
     </div>
   );
 }
