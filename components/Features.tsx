@@ -7,6 +7,7 @@ import {
   Users,
   BarChart3,
   UsersRound,
+  Smartphone,
 } from "lucide-react";
 
 const features = [
@@ -41,6 +42,12 @@ const features = [
     badge: "Team+",
     description:
       "Managers see all agent activity, message performance, and team-wide referrals.",
+  },
+  {
+    icon: Smartphone,
+    title: "Works On Any Device",
+    description:
+      "Add ClientPro to your phone's home screen for an app-like experience. No download required — works on iPhone, Android, and desktop.",
   },
 ];
 
