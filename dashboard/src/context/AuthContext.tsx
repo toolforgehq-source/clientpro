@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { api, User, Usage } from "@/lib/api";
 
 interface AuthContextType {
@@ -29,8 +30,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [usage, setUsage] = useState<Usage | null>(null);
   const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
+  const isDemo = pathname?.startsWith("/demo");
 
   const refreshUser = useCallback(async () => {
+    // Skip auth API call on demo routes — demo uses its own DemoContext
+    if (isDemo) {
+      setLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem("token");
     if (!token) {
       setUser(null);
@@ -49,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUsage(data.usage);
     }
     setLoading(false);
-  }, []);
+  }, [isDemo]);
 
   useEffect(() => {
     refreshUser();
