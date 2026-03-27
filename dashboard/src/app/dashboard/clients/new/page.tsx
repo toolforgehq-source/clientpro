@@ -68,7 +68,7 @@ export default function NewClientPage() {
         toast("error", error);
       }
     } else {
-      toast("success", `Client added! ${result?.messages_scheduled || 4} messages scheduled.`);
+      toast("success", `Client added! ${result?.messages_scheduled || 22} messages scheduled.`);
       refreshUser();
       router.push("/dashboard/clients");
     }
