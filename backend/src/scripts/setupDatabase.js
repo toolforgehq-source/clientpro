@@ -126,7 +126,17 @@ SELECT * FROM (VALUES
   ('Year 2 Anniversary', 730, 'Two years already, {{first_name}}! 🎉 Hope you''re still loving {{city}}. Let me know if you or anyone you know needs help with real estate.'),
   ('Month 30 Check-in', 900, 'Hey {{first_name}}! It''s been a while — just wanted to say hi and see how things are going in {{city}}. Always here if you need anything!'),
   ('Year 3 Anniversary', 1095, 'Happy 3-year house-iversary {{first_name}}! 🏡 Time flies! Hope {{city}} still feels like home. Let me know if I can ever help.'),
-  ('Year 5 Milestone', 1825, 'Wow {{first_name}}, 5 years in {{city}}! That''s a real milestone. 🎉 Hope you''re loving it. If you ever think about your next move, I''m always here for you.')
+  ('Month 42 Referral Nudge', 1275, 'Hi {{first_name}}! Hope all is well in {{city}}. If anyone you know is thinking about buying or selling, I''d love to help — just send them my way!'),
+  ('Year 4 Anniversary', 1460, 'Four years in {{city}}, {{first_name}}! Hope the {{property_type}} is still treating you great. Always here if you need anything! 🏡'),
+  ('Month 54 Market Update', 1640, 'Hey {{first_name}}! Just a quick note — {{city}} home values have been solid. Great news for your investment! Let me know if you ever want to chat.'),
+  ('Year 5 Milestone', 1825, 'Wow {{first_name}}, 5 years in {{city}}! That''s a real milestone. 🎉 Hope you''re loving it. If you ever think about your next move, I''m always here for you.'),
+  ('Year 6 Anniversary', 2190, 'Can you believe it''s been 6 years, {{first_name}}? Hope {{city}} still feels like home. I''m always just a text away if you need anything!'),
+  ('Month 78 Referral Nudge', 2370, 'Hi {{first_name}}! Quick note — if any friends, family, or coworkers are looking at real estate in {{city}}, I''d love to help them out!'),
+  ('Year 7 Anniversary', 2555, 'Seven years in {{city}}, {{first_name}}! 🏡 Time really flies. Hope you''re still loving it. Always here for you!'),
+  ('Year 8 Market Update', 2920, 'Hey {{first_name}}! Homes in {{city}} continue to be a great investment. Hope you''re doing well — let me know if I can ever help with anything!'),
+  ('Year 9 Check-in', 3285, 'Hi {{first_name}}! Just thinking about you and wanted to say hi. Hope {{city}} is treating you well. I''m always here if you need anything!'),
+  ('Year 10 Milestone', 3650, '10 years in {{city}}, {{first_name}}! What an incredible milestone. 🎉 I hope the {{property_type}} has been everything you dreamed of. Here''s to the next 10!'),
+  ('Year 10 Referral', 3740, 'Hey {{first_name}}! After 10 wonderful years in {{city}}, I bet you know the neighborhood better than anyone. If anyone you know is looking to move to the area, I''d love to help them find their perfect home!')
 ) AS t(name, trigger_days, template)
 WHERE NOT EXISTS (SELECT 1 FROM templates LIMIT 1);
 `;

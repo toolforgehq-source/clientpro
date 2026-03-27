@@ -14,7 +14,7 @@ const reasons = [
     icon: Zap,
     title: "Set It and Forget It",
     description:
-      "Import your clients once. We handle the rest\u2014personalized check-ins, market updates, referral nudges, and anniversary messages. 12 texts over 5 years, timed perfectly.",
+      "Import your clients once. We handle the rest\u2014personalized check-ins, market updates, referral nudges, and anniversary messages. 22 texts over 10 years, timed perfectly.",
   },
   {
     icon: ArrowRight,
