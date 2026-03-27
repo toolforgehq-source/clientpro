@@ -122,6 +122,12 @@ export const api = {
     cancel: (id: string) => DELETE<{ message: string }>(`/api/messages/${id}`),
     sendCustom: (data: { message_text: string; client_ids?: string[]; send_to_all?: boolean }) =>
       POST<{ message: string; count: number }>("/api/messages/custom", data),
+    replies: () =>
+      GET<{ replies: Message[]; total: number }>("/api/messages/replies"),
+    conversation: (clientId: string) =>
+      GET<{ client: { id: string; first_name: string; last_name: string; phone_number: string }; messages: Message[] }>(`/api/messages/conversation/${clientId}`),
+    reply: (data: { client_id: string; message_text: string }) =>
+      POST<{ message: Message }>("/api/messages/reply", data),
   },
   referrals: {
     list: (params?: { page?: number; limit?: number }) =>
@@ -199,7 +205,7 @@ export interface Message {
   client_phone_number?: string;
   reply_text?: string;
   reply_at?: string;
-  reply_read?: boolean;
+  is_read?: boolean;
 }
 
 export interface Referral {

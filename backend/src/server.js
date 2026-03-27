@@ -75,6 +75,13 @@ cron.schedule("0 2 * * *", () => {
   updateEngagementScores();
 });
 
+// Ensure database schema exists on startup
+const ensureSchema = require("./scripts/ensureSchema");
+ensureSchema().catch((err) => {
+  logger.error("Schema initialization failed (fatal):", err.message);
+  process.exit(1);
+});
+
 // Run database migrations on startup
 const migrateConstraints = require("./scripts/migrateConstraints");
 migrateConstraints().catch((err) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MessageSquare, Clock, CheckCircle, MessageCircle, Send } from "lucide-react";
 import { api, Message } from "@/lib/api";
@@ -12,7 +12,18 @@ import Modal from "@/components/ui/Modal";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
 import CustomMessageModal from "@/components/dashboard/CustomMessageModal";
+import ConversationThread from "@/components/dashboard/ConversationThread";
 import { formatDate, formatRelativeDate, getStatusColor } from "@/lib/utils";
+
+interface ConversationPreview {
+  client_id: string;
+  client_first_name: string;
+  client_last_name: string;
+  latest_reply_text: string;
+  latest_reply_at: string;
+  has_unread: boolean;
+  reply_count: number;
+}
 
 function MessagesContent() {
   const router = useRouter();
@@ -31,26 +42,53 @@ function MessagesContent() {
   const [cancelModal, setCancelModal] = useState<Message | null>(null);
   const [cancelling, setCancelling] = useState(false);
   const [customMessageOpen, setCustomMessageOpen] = useState(false);
+  const [conversations, setConversations] = useState<ConversationPreview[]>([]);
+  const [activeConversation, setActiveConversation] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      setLoading(true);
+  const fetchMessages = useCallback(async () => {
+    setLoading(true);
+    if (tab === "replies") {
+      const { data } = await api.messages.replies();
+      if (data) {
+        const clientMap = new Map<string, ConversationPreview>();
+        for (const msg of data.replies) {
+          const key = msg.client_id;
+          const existing = clientMap.get(key);
+          if (!existing) {
+            clientMap.set(key, {
+              client_id: msg.client_id,
+              client_first_name: msg.client_first_name || "",
+              client_last_name: msg.client_last_name || "",
+              latest_reply_text: msg.reply_text || "",
+              latest_reply_at: msg.reply_at || "",
+              has_unread: !msg.is_read,
+              reply_count: 1,
+            });
+          } else {
+            existing.reply_count++;
+            if (!msg.is_read) existing.has_unread = true;
+          }
+        }
+        setConversations(Array.from(clientMap.values()));
+      }
+      setLoading(false);
+    } else {
       let status: string | undefined;
       if (tab === "upcoming") status = "scheduled";
       else if (tab === "sent") status = "sent";
 
       const { data } = await api.messages.list({ status, limit: 100 });
       if (data) {
-        let filtered = data.messages || [];
-        if (tab === "replies") {
-          filtered = filtered.filter((m) => m.reply_text);
-        }
-        setMessages(filtered);
+        setMessages(data.messages || []);
       }
       setLoading(false);
-    };
-    fetchMessages();
+    }
   }, [tab]);
+
+  useEffect(() => {
+    setActiveConversation(null);
+    fetchMessages();
+  }, [fetchMessages]);
 
   const handleSave = async () => {
     if (!editModal) return;
@@ -109,7 +147,7 @@ function MessagesContent() {
     { key: "replies" as const, label: "Replies", icon: MessageCircle },
   ];
 
-  const unreadReplies = messages.filter((m) => m.reply_text && !m.reply_read).length;
+  const unreadConversations = conversations.filter((c) => c.has_unread).length;
 
   return (
     <div>
@@ -135,9 +173,9 @@ function MessagesContent() {
             >
               <Icon className="h-4 w-4" />
               {t.label}
-              {t.key === "replies" && unreadReplies > 0 && (
+              {t.key === "replies" && unreadConversations > 0 && (
                 <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-xs text-white">
-                  {unreadReplies}
+                  {unreadConversations}
                 </span>
               )}
             </button>
@@ -147,23 +185,76 @@ function MessagesContent() {
 
       {loading ? (
         <LoadingSpinner text="Loading messages..." />
-      ) : messages.length === 0 ? (
+      ) : tab === "replies" ? (
+        activeConversation ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <ConversationThread
+              clientId={activeConversation}
+              onBack={() => {
+                setActiveConversation(null);
+                fetchMessages();
+              }}
+            />
+          </div>
+        ) : conversations.length === 0 ? (
+          <div className="rounded-xl border border-gray-200 bg-white p-8">
+            <EmptyState
+              icon={<MessageCircle className="h-16 w-16" />}
+              title="No replies yet"
+              description="When clients reply to your messages, conversations will appear here. You can reply back directly from the dashboard."
+            />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {conversations.map((convo) => (
+              <button
+                key={convo.client_id}
+                onClick={() => setActiveConversation(convo.client_id)}
+                className="w-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-left hover:bg-gray-50 transition-colors"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                    {convo.client_first_name[0]}{convo.client_last_name[0]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-gray-900">
+                        {convo.client_first_name} {convo.client_last_name}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {convo.latest_reply_at ? formatRelativeDate(convo.latest_reply_at) : ""}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 text-sm text-gray-500 truncate">
+                      {convo.latest_reply_text}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {convo.has_unread && (
+                      <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                    )}
+                    {convo.reply_count > 1 && (
+                      <Badge className="bg-gray-100 text-gray-600">{convo.reply_count}</Badge>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )
+      ) : (tab === "upcoming" || tab === "sent") && messages.length === 0 ? (
         <div className="rounded-xl border border-gray-200 bg-white p-8">
           <EmptyState
             icon={<MessageSquare className="h-16 w-16" />}
             title={
               tab === "upcoming"
                 ? "No upcoming messages"
-                : tab === "sent"
-                ? "No sent messages yet"
-                : "No replies yet"
+                : "No sent messages yet"
             }
             description={
               tab === "upcoming"
                 ? "Messages will appear here when clients are added"
-                : tab === "sent"
-                ? "Sent messages will appear here"
-                : "Client replies will appear here"
+                : "Sent messages will appear here"
             }
           />
         </div>
@@ -220,7 +311,7 @@ function MessagesContent() {
             </div>
           ))}
         </div>
-      ) : tab === "sent" ? (
+      ) : (
         <div className="space-y-2">
           {messages.map((msg) => (
             <div
@@ -245,40 +336,6 @@ function MessagesContent() {
                     Sent {formatDate(msg.sent_at || msg.scheduled_for)}
                   </p>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  <button
-                    onClick={() => router.push(`/dashboard/clients/${msg.client_id}`)}
-                    className="text-sm font-medium text-primary hover:underline"
-                  >
-                    {msg.client_first_name} {msg.client_last_name}
-                  </button>
-                  <div className="mt-2 rounded-lg bg-gray-50 p-3 text-sm text-gray-600">
-                    <p className="text-xs font-medium text-gray-400 mb-1">Your message:</p>
-                    {msg.message_text}
-                  </div>
-                  <div className="mt-2 rounded-lg bg-green-50 border border-green-100 p-3">
-                    <p className="text-xs font-medium text-green-700 mb-1">Client replied:</p>
-                    <p className="text-sm text-green-800">{msg.reply_text}</p>
-                    <p className="mt-1 text-xs text-green-600">
-                      {msg.reply_at ? formatDate(msg.reply_at) : ""}
-                    </p>
-                  </div>
-                </div>
-                {!msg.reply_read && (
-                  <Badge className="bg-blue-100 text-blue-700 ml-2">New</Badge>
-                )}
               </div>
             </div>
           ))}
@@ -331,22 +388,6 @@ function MessagesContent() {
         open={customMessageOpen}
         onClose={() => setCustomMessageOpen(false)}
         onSent={() => {
-          // Refresh messages list after sending
-          const fetchMessages = async () => {
-            setLoading(true);
-            let status: string | undefined;
-            if (tab === "upcoming") status = "scheduled";
-            else if (tab === "sent") status = "sent";
-            const { data } = await api.messages.list({ status, limit: 100 });
-            if (data) {
-              let filtered = data.messages || [];
-              if (tab === "replies") {
-                filtered = filtered.filter((m) => m.reply_text);
-              }
-              setMessages(filtered);
-            }
-            setLoading(false);
-          };
           fetchMessages();
         }}
       />
