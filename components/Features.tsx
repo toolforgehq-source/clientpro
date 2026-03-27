@@ -14,7 +14,7 @@ const features = [
     icon: MessageSquare,
     title: "Automated Text Messages",
     description:
-      "4-5 personalized texts per year from a dedicated local number matched to your area code. Each message includes their name, property details, and city. Edit them if you want, or let them send as-is.",
+      "12 personalized texts over 5 years from a dedicated local number matched to your area code. Consistent check-ins every 2-3 months in year one, then milestone anniversaries. Each message includes their name, property details, and city. Edit any message or let them send as-is.",
   },
   {
     icon: RefreshCw,

@@ -23,7 +23,7 @@ export default function RegisterPage() {
         <div className="mt-8 space-y-4">
           <div className="flex items-center gap-3 text-primary-100">
             <div className="h-6 w-6 rounded-full bg-accent/30 flex items-center justify-center text-xs font-bold text-white">1</div>
-            <span>4 personalized texts per client per year</span>
+            <span>12 personalized texts per client over 5 years</span>
           </div>
           <div className="flex items-center gap-3 text-primary-100">
             <div className="h-6 w-6 rounded-full bg-accent/30 flex items-center justify-center text-xs font-bold text-white">2</div>

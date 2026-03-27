@@ -116,10 +116,17 @@ const seedTemplates = `
 INSERT INTO templates (name, trigger_days_after_closing, message_template)
 SELECT * FROM (VALUES
   ('Week 1 Welcome', 7, 'Hey {{first_name}}! Hope you''re settling into {{city}} well! Let me know if you need anything. 🏡'),
+  ('Month 1 Neighborhood', 30, 'Hi {{first_name}}! How''s the neighborhood treating you? Found any favorite local spots in {{city}} yet?'),
   ('Month 3 Check-in', 90, 'How''s the {{property_type}} treating you, {{first_name}}? Any questions about the neighborhood?'),
   ('Month 6 Market Update', 180, 'Quick update {{first_name}}: Homes in {{city}} are performing well! Your investment is looking good. 📈'),
+  ('Month 9 Referral Nudge', 270, 'Hey {{first_name}}! Just thinking about you. If any friends or family are looking to buy or sell in {{city}}, I''d love to help them out!'),
   ('Year 1 Anniversary', 365, 'Happy house-iversary {{first_name}}! 🎉 Can you believe it''s been a year? Hope you''re loving {{city}}!'),
-  ('Annual Check-in', 730, 'Just checking in {{first_name}}! How''s life in {{city}}? Let me know if you or anyone you know needs help with real estate.')
+  ('Month 15 Check-in', 450, 'Hey {{first_name}}, just checking in! How''s everything going with the {{property_type}}? Hope {{city}} is treating you well.'),
+  ('Month 18 Market Update', 540, 'Hi {{first_name}}! Quick market update: {{city}} real estate is staying strong. Great news for your investment! Let me know if you ever have questions.'),
+  ('Year 2 Anniversary', 730, 'Two years already, {{first_name}}! 🎉 Hope you''re still loving {{city}}. Let me know if you or anyone you know needs help with real estate.'),
+  ('Month 30 Check-in', 900, 'Hey {{first_name}}! It''s been a while — just wanted to say hi and see how things are going in {{city}}. Always here if you need anything!'),
+  ('Year 3 Anniversary', 1095, 'Happy 3-year house-iversary {{first_name}}! 🏡 Time flies! Hope {{city}} still feels like home. Let me know if I can ever help.'),
+  ('Year 5 Milestone', 1825, 'Wow {{first_name}}, 5 years in {{city}}! That''s a real milestone. 🎉 Hope you''re loving it. If you ever think about your next move, I''m always here for you.')
 ) AS t(name, trigger_days, template)
 WHERE NOT EXISTS (SELECT 1 FROM templates LIMIT 1);
 `;
