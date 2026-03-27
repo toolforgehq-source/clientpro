@@ -176,7 +176,7 @@ export default function CompliancePage() {
             blasts. Our standard messaging cadence includes:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>12 personalized messages per client over 5 years (frequent in year one, then milestone anniversaries)</li>
+            <li>22 personalized messages per client over 10 years (frequent in year one, then regular touchpoints through year 10)</li>
             <li>Messages are spaced to feel natural and non-intrusive</li>
             <li>No bulk messaging or blast capabilities</li>
             <li>Each message is individually personalized to the client relationship</li>

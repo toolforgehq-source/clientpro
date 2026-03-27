@@ -11,7 +11,7 @@ const plans = [
     annual: 278,
     features: [
       "10 clients",
-      "12 personalized texts over 5 years",
+      "22 personalized texts over 10 years",
       "Dedicated local number (your area code)",
       "Edit any message before it sends",
       "Referral tracking",
@@ -27,7 +27,7 @@ const plans = [
     annual: 470,
     features: [
       "20 clients",
-      "12 personalized texts over 5 years",
+      "22 personalized texts over 10 years",
       "Dedicated local number (your area code)",
       "Edit any message before it sends",
       "Referral tracking",
@@ -43,7 +43,7 @@ const plans = [
     annual: 1490,
     features: [
       "100 clients",
-      "12 personalized texts over 5 years",
+      "22 personalized texts over 10 years",
       "Dedicated local number (your area code)",
       "Edit any message before it sends",
       "Referral tracking",
@@ -59,7 +59,7 @@ const plans = [
     annual: 2990,
     features: [
       "500 clients",
-      "12 personalized texts over 5 years",
+      "22 personalized texts over 10 years",
       "Dedicated local number (your area code)",
       "Edit any message before it sends",
       "Referral tracking",
@@ -104,7 +104,7 @@ const plans = [
 
 const comparisonFeatures = [
   { name: "Clients", values: ["10", "20", "100", "500", "1,000", "Unlimited"] },
-  { name: "Automated Texts", values: ["12", "12", "12", "12", "12", "12"] },
+  { name: "Automated Texts", values: ["22", "22", "22", "22", "22", "22"] },
   { name: "Dedicated Local Number (Your Area Code)", values: ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes"] },
   { name: "Edit Before Sending", values: ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes"] },
   { name: "Referral Tracking", values: ["Yes", "Yes", "Yes", "Yes", "Yes", "Yes"] },
@@ -263,7 +263,7 @@ export default function Pricing() {
         </div>
 
         <p className="text-center text-slate-500 text-sm mb-8">
-          All plans include: 12 personalized texts over 5 years, dedicated local number matched to your area code, edit before sending, referral tracking, TCPA-compliant opt-outs, and secure data storage.
+          All plans include: 22 personalized texts over 10 years, dedicated local number matched to your area code, edit before sending, referral tracking, TCPA-compliant opt-outs, and secure data storage.
         </p>
 
         <div className="text-center">

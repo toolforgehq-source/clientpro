@@ -68,7 +68,7 @@ export default function NewClientPage() {
         toast("error", error);
       }
     } else {
-      toast("success", `Client added! ${result?.messages_scheduled || 4} messages scheduled.`);
+      toast("success", `Client added! ${result?.messages_scheduled || 22} messages scheduled.`);
       refreshUser();
       router.push("/dashboard/clients");
     }
@@ -211,7 +211,7 @@ export default function NewClientPage() {
           <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 flex items-start gap-3">
             <Info className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-blue-700">
-              We&apos;ll automatically schedule 4 personalized messages over the next year to keep you top-of-mind with this client.
+              We&apos;ll automatically schedule 22 personalized messages over 10 years to keep you top-of-mind with this client.
             </p>
           </div>
 
