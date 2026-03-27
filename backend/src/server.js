@@ -81,6 +81,11 @@ migrateConstraints().catch((err) => {
   logger.error("Startup migration failed (non-fatal):", err.message);
 });
 
+const migrateTemplates = require("./scripts/migrateTemplates");
+migrateTemplates().catch((err) => {
+  logger.error("Template migration failed (non-fatal):", err.message);
+});
+
 app.listen(PORT, () => {
   logger.info(`ClientPro API running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);
