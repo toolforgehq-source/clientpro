@@ -175,6 +175,40 @@ const Message = {
     );
     return parseInt(result.rows[0].count, 10);
   },
+
+  async findConversation(clientId, agentId) {
+    const result = await query(
+      `SELECT m.*, c.first_name as client_first_name, c.last_name as client_last_name, c.phone_number as client_phone
+       FROM messages m
+       JOIN clients c ON c.id = m.client_id
+       WHERE m.client_id = $1 AND m.agent_id = $2 AND m.status IN ('sent', 'delivered', 'replied')
+       ORDER BY COALESCE(m.sent_at, m.scheduled_for) ASC`,
+      [clientId, agentId]
+    );
+    return result.rows;
+  },
+
+  async findAllReplies(agentId) {
+    const result = await query(
+      `SELECT m.*, c.first_name as client_first_name, c.last_name as client_last_name, c.phone_number as client_phone
+       FROM messages m
+       JOIN clients c ON c.id = m.client_id
+       WHERE m.agent_id = $1 AND m.status = 'replied'
+       ORDER BY m.reply_at DESC`,
+      [agentId]
+    );
+    return result.rows;
+  },
+
+  async createSentReply({ client_id, agent_id, message_text, twilio_message_sid }) {
+    const result = await query(
+      `INSERT INTO messages (client_id, agent_id, message_text, scheduled_for, status, sent_at, twilio_message_sid)
+       VALUES ($1, $2, $3, now(), 'sent', now(), $4)
+       RETURNING *`,
+      [client_id, agent_id, message_text, twilio_message_sid]
+    );
+    return result.rows[0];
+  },
 };
 
 module.exports = Message;
