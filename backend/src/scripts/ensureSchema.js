@@ -111,14 +111,22 @@ CREATE TABLE IF NOT EXISTS templates (
 );
 `;
 
-async function ensureSchema() {
-  try {
-    await pool.query(schema);
-    logger.info("Schema: all tables verified");
-  } catch (err) {
-    logger.error("Schema initialization failed:", err.message);
-    throw err;
+async function ensureSchema(retries = 5, delayMs = 3000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await pool.query(schema);
+      logger.info("Schema: all tables verified");
+      return;
+    } catch (err) {
+      logger.error(`Schema initialization attempt ${attempt}/${retries} failed:`, err.message);
+      if (attempt < retries) {
+        logger.info(`Retrying in ${delayMs / 1000}s...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
   }
+  logger.error("Schema initialization failed after all retries");
+  throw new Error("Schema initialization failed after all retries");
 }
 
 module.exports = ensureSchema;
