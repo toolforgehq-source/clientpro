@@ -49,27 +49,8 @@ app.post("/api/billing/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/api/health", async (req, res) => {
-  const { pool } = require("./config/database");
-  let dbStatus = "unknown";
-  let dbError = null;
-  let tables = [];
-  try {
-    const result = await pool.query("SELECT 1 AS connected");
-    dbStatus = "connected";
-    const tableResult = await pool.query(
-      "SELECT tablename FROM pg_tables WHERE schemaname = 'public'"
-    );
-    tables = tableResult.rows.map((r) => r.tablename);
-  } catch (err) {
-    dbStatus = "error";
-    dbError = err.message;
-  }
-  res.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-    database: { status: dbStatus, error: dbError, tables },
-  });
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
 app.use("/api/auth", authRoutes);
