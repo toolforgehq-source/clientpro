@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Sidebar from "@/components/dashboard/Sidebar";
 import InstallBanner from "@/components/pwa/InstallBanner";
+import NotificationPrompt from "@/components/pwa/NotificationPrompt";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useServiceWorker } from "@/hooks/useServiceWorker";
 
@@ -41,6 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </main>
       <InstallBanner />
+      <NotificationPrompt />
     </div>
   );
 }

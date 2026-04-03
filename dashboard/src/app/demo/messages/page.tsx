@@ -165,7 +165,7 @@ export default function DemoMessagesPage() {
                       <span className="font-medium text-gray-900">
                         {msg.client_first_name} {msg.client_last_name}
                       </span>
-                      {!msg.reply_read && (
+                      {!msg.is_read && (
                         <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700">
                           New
                         </span>

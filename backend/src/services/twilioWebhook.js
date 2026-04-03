@@ -3,6 +3,7 @@ const Client = require("../models/Client");
 const Message = require("../models/Message");
 const { getTwilioClient } = require("../config/twilio");
 const { sendReplyNotificationEmail } = require("./emailService");
+const { notifyNewReply } = require("./pushService");
 const logger = require("../utils/logger");
 
 const STOP_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end"];
@@ -59,6 +60,17 @@ const handleIncomingSMS = async ({ From, To, Body, MessageSid }) => {
     `${client.first_name} ${client.last_name}`,
     Body
   );
+
+  // Send push notification to agent's devices
+  try {
+    await notifyNewReply(
+      agent.id,
+      `${client.first_name} ${client.last_name}`,
+      Body
+    );
+  } catch (pushErr) {
+    logger.error(`Push notification failed for agent ${agent.id}:`, pushErr.message);
+  }
 
   logger.info(`Reply processed for client ${client.id}, agent ${agent.id}`);
 };
