@@ -5,8 +5,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPhone(value: string): string {
-  const digits = value.replace(/\D/g, "");
+  let digits = value.replace(/\D/g, "");
   if (digits.length === 0) return "";
+  // Auto-prepend US country code for 10-digit numbers without a leading 1
+  if (digits.length === 10 && !digits.startsWith("1")) {
+    digits = "1" + digits;
+  }
   if (digits.length <= 1) return `+${digits}`;
   if (digits.length <= 4) return `+${digits.slice(0, 1)} (${digits.slice(1)}`;
   if (digits.length <= 7)
