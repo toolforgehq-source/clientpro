@@ -136,6 +136,13 @@ export const api = {
     update: (id: string, data: Partial<Referral>) =>
       PUT<{ referral: Referral }>(`/api/referrals/${id}`, data),
   },
+  push: {
+    vapidKey: () => GET<{ vapidPublicKey: string }>("/api/push/vapid-key"),
+    subscribe: (subscription: Record<string, unknown>) =>
+      POST<{ message: string }>("/api/push/subscribe", { subscription }),
+    unsubscribe: (endpoint: string) =>
+      POST<{ message: string }>("/api/push/unsubscribe", { endpoint }),
+  },
   billing: {
     createCheckout: (tier: string, billing_cycle?: string) =>
       POST<{ url: string }>("/api/billing/create-checkout-session", { tier, billing_cycle: billing_cycle || "monthly" }),

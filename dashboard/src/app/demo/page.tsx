@@ -19,7 +19,7 @@ export default function DemoDashboard() {
   const router = useRouter();
 
   const unreadReplies = DEMO_MESSAGES_SENT.filter(
-    (m) => m.reply_text && !m.reply_read
+    (m) => m.reply_text && !m.is_read
   ).length;
 
   const thisYearReferrals = DEMO_REFERRALS.length;

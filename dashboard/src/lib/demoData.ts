@@ -176,7 +176,7 @@ export const DEMO_MESSAGES_SENT: Message[] = [
     client_phone_number: "+15125551001",
     reply_text: "That's great to hear! Actually, my brother is looking to buy in the area. Can I give him your number?",
     reply_at: daysAgo(269),
-    reply_read: true,
+    is_read: true,
   },
   {
     id: "demo-msg-s5",
@@ -192,7 +192,7 @@ export const DEMO_MESSAGES_SENT: Message[] = [
     client_phone_number: "+15125551003",
     reply_text: "Thanks Sarah! We absolutely love it. Best decision we ever made!",
     reply_at: daysAgo(112),
-    reply_read: true,
+    is_read: true,
   },
   {
     id: "demo-msg-s6",
@@ -234,7 +234,7 @@ export const DEMO_MESSAGES_SENT: Message[] = [
     client_phone_number: "+15125551005",
     reply_text: "Thanks so much Sarah! We're loving it. Our neighbor actually mentioned they might sell — interested?",
     reply_at: daysAgo(7),
-    reply_read: false,
+    is_read: false,
   },
 ];
 

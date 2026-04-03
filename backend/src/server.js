@@ -15,6 +15,7 @@ const teamRoutes = require("./routes/team");
 const analyticsRoutes = require("./routes/analytics");
 const twilioRoutes = require("./routes/twilio");
 const contactRoutes = require("./routes/contact");
+const pushRoutes = require("./routes/push");
 
 const sendScheduledMessages = require("./jobs/sendScheduledMessages");
 const updateEngagementScores = require("./jobs/updateEngagementScores");
@@ -62,6 +63,7 @@ app.use("/api/team", teamRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/twilio", twilioRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/push", pushRoutes);
 
 app.use(errorHandler);
 
