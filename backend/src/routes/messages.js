@@ -4,6 +4,7 @@ const Message = require("../models/Message");
 const Client = require("../models/Client");
 const User = require("../models/User");
 const auth = require("../middleware/auth");
+const requireSubscription = require("../middleware/requireSubscription");
 const { validatePagination } = require("../utils/validation");
 const { getTwilioClient } = require("../config/twilio");
 const logger = require("../utils/logger");
@@ -14,6 +15,7 @@ const router = Router();
 router.post(
   "/custom",
   auth,
+  requireSubscription,
   [
     body("message_text").trim().notEmpty().withMessage("Message text is required").isLength({ max: 320 }).withMessage("Message text must be 320 characters or less"),
     body("client_ids").optional().isArray().withMessage("client_ids must be an array"),
@@ -68,7 +70,7 @@ router.post(
   }
 );
 
-router.get("/", auth, validatePagination, async (req, res, next) => {
+router.get("/", auth, requireSubscription, validatePagination, async (req, res, next) => {
   try {
     const { status, page = 1, limit = 50 } = req.query;
     const result = await Message.findByAgent(req.user.id, {
@@ -82,7 +84,7 @@ router.get("/", auth, validatePagination, async (req, res, next) => {
   }
 });
 
-router.get("/upcoming", auth, async (req, res, next) => {
+router.get("/upcoming", auth, requireSubscription, async (req, res, next) => {
   try {
     const messages = await Message.findUpcoming(req.user.id, 30);
 
@@ -101,7 +103,7 @@ router.get("/upcoming", auth, async (req, res, next) => {
   }
 });
 
-router.get("/replies", auth, async (req, res, next) => {
+router.get("/replies", auth, requireSubscription, async (req, res, next) => {
   try {
     const replies = await Message.findAllReplies(req.user.id);
     res.json({ replies, total: replies.length });
@@ -110,7 +112,7 @@ router.get("/replies", auth, async (req, res, next) => {
   }
 });
 
-router.get("/conversation/:clientId", auth, async (req, res, next) => {
+router.get("/conversation/:clientId", auth, requireSubscription, async (req, res, next) => {
   try {
     const client = await Client.findByIdAndAgent(req.params.clientId, req.user.id);
     if (!client) {
@@ -139,6 +141,7 @@ router.get("/conversation/:clientId", auth, async (req, res, next) => {
 router.post(
   "/reply",
   auth,
+  requireSubscription,
   [
     body("client_id").trim().notEmpty().withMessage("Client ID is required"),
     body("message_text").trim().notEmpty().withMessage("Message text is required").isLength({ max: 320 }).withMessage("Message text must be 320 characters or less"),
@@ -195,6 +198,7 @@ router.post(
 router.put(
   "/:id",
   auth,
+  requireSubscription,
   [body("message_text").trim().notEmpty().withMessage("Message text required")],
   async (req, res, next) => {
     try {
@@ -220,7 +224,7 @@ router.put(
   }
 );
 
-router.put("/:id/read", auth, async (req, res, next) => {
+router.put("/:id/read", auth, requireSubscription, async (req, res, next) => {
   try {
     const message = await Message.findById(req.params.id);
     if (!message || message.agent_id !== req.user.id) {
@@ -234,7 +238,7 @@ router.put("/:id/read", auth, async (req, res, next) => {
   }
 });
 
-router.delete("/:id", auth, async (req, res, next) => {
+router.delete("/:id", auth, requireSubscription, async (req, res, next) => {
   try {
     const message = await Message.findById(req.params.id);
     if (!message || message.agent_id !== req.user.id) {

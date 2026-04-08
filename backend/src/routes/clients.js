@@ -6,6 +6,7 @@ const Client = require("../models/Client");
 const Message = require("../models/Message");
 const Referral = require("../models/Referral");
 const auth = require("../middleware/auth");
+const requireSubscription = require("../middleware/requireSubscription");
 const { checkClientLimit, TIER_LIMITS } = require("../middleware/validateTier");
 const { scheduleMessagesForClient } = require("../services/messageScheduler");
 const { validatePhone, validatePropertyType, validatePagination } = require("../utils/validation");
@@ -17,6 +18,7 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 *
 router.post(
   "/",
   auth,
+  requireSubscription,
   checkClientLimit,
   [
     body("first_name").trim().notEmpty().withMessage("First name required"),
@@ -53,7 +55,7 @@ router.post(
   }
 );
 
-router.get("/", auth, validatePagination, async (req, res, next) => {
+router.get("/", auth, requireSubscription, validatePagination, async (req, res, next) => {
   try {
     const { page = 1, limit = 50, search } = req.query;
     const result = await Client.findByAgentId(req.user.id, {
@@ -67,7 +69,7 @@ router.get("/", auth, validatePagination, async (req, res, next) => {
   }
 });
 
-router.get("/:id", auth, async (req, res, next) => {
+router.get("/:id", auth, requireSubscription, async (req, res, next) => {
   try {
     const client = await Client.findByIdAndAgent(req.params.id, req.user.id);
     if (!client) {
@@ -89,6 +91,7 @@ router.get("/:id", auth, async (req, res, next) => {
 router.put(
   "/:id",
   auth,
+  requireSubscription,
   [
     body("first_name").optional().trim().notEmpty(),
     body("last_name").optional().trim().notEmpty(),
@@ -122,7 +125,7 @@ router.put(
   }
 );
 
-router.delete("/:id", auth, async (req, res, next) => {
+router.delete("/:id", auth, requireSubscription, async (req, res, next) => {
   try {
     const client = await Client.findByIdAndAgent(req.params.id, req.user.id);
     if (!client) {
@@ -138,7 +141,7 @@ router.delete("/:id", auth, async (req, res, next) => {
   }
 });
 
-router.post("/import", auth, upload.single("file"), async (req, res, next) => {
+router.post("/import", auth, requireSubscription, upload.single("file"), async (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: { message: "CSV file required", code: "NO_FILE" } });

@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const Referral = require("../models/Referral");
 const Client = require("../models/Client");
 const auth = require("../middleware/auth");
+const requireSubscription = require("../middleware/requireSubscription");
 const { validatePagination } = require("../utils/validation");
 
 const router = Router();
@@ -10,6 +11,7 @@ const router = Router();
 router.post(
   "/",
   auth,
+  requireSubscription,
   [
     body("referred_by_client_id").isUUID().withMessage("Valid client ID required"),
     body("referral_first_name").trim().notEmpty().withMessage("First name required"),
@@ -42,7 +44,7 @@ router.post(
   }
 );
 
-router.get("/", auth, validatePagination, async (req, res, next) => {
+router.get("/", auth, requireSubscription, validatePagination, async (req, res, next) => {
   try {
     const { status, page = 1, limit = 50 } = req.query;
     const result = await Referral.findByAgent(req.user.id, {
@@ -59,6 +61,7 @@ router.get("/", auth, validatePagination, async (req, res, next) => {
 router.put(
   "/:id",
   auth,
+  requireSubscription,
   [
     body("status").optional().isIn(["new", "contacted", "qualified", "converted", "lost"]),
     body("notes").optional().trim(),

@@ -5,6 +5,7 @@ const User = require("../models/User");
 const Client = require("../models/Client");
 const Message = require("../models/Message");
 const auth = require("../middleware/auth");
+const requireSubscription = require("../middleware/requireSubscription");
 const { requireTier, requireRole } = require("../middleware/validateTier");
 const { sendTeamInviteEmail } = require("../services/emailService");
 const logger = require("../utils/logger");
@@ -14,6 +15,7 @@ const router = Router();
 router.post(
   "/invite",
   auth,
+  requireSubscription,
   requireTier("team", "brokerage"),
   requireRole("team_admin", "broker_admin"),
   [
@@ -53,6 +55,7 @@ router.post(
 router.post(
   "/remove",
   auth,
+  requireSubscription,
   requireTier("team", "brokerage"),
   requireRole("team_admin", "broker_admin"),
   [body("member_id").isUUID().withMessage("Valid member ID required")],
@@ -83,6 +86,7 @@ router.post(
 router.get(
   "/members",
   auth,
+  requireSubscription,
   requireTier("team", "brokerage"),
   requireRole("team_admin", "broker_admin"),
   async (req, res, next) => {
