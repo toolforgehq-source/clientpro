@@ -4,6 +4,7 @@ const Client = require("../models/Client");
 const Message = require("../models/Message");
 const Referral = require("../models/Referral");
 const auth = require("../middleware/auth");
+const requireSubscription = require("../middleware/requireSubscription");
 const { requireTier } = require("../middleware/validateTier");
 
 const router = Router();
@@ -11,6 +12,7 @@ const router = Router();
 router.get(
   "/dashboard",
   auth,
+  requireSubscription,
   requireTier("elite", "team", "brokerage"),
   async (req, res, next) => {
     try {

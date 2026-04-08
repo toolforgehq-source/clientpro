@@ -1,12 +1,13 @@
 const { Router } = require("express");
 const auth = require("../middleware/auth");
+const requireSubscription = require("../middleware/requireSubscription");
 const PushSubscription = require("../models/PushSubscription");
 const logger = require("../utils/logger");
 
 const router = Router();
 
 // Subscribe to push notifications
-router.post("/subscribe", auth, async (req, res) => {
+router.post("/subscribe", auth, requireSubscription, async (req, res) => {
   try {
     const { subscription } = req.body;
 
@@ -25,7 +26,7 @@ router.post("/subscribe", auth, async (req, res) => {
 });
 
 // Unsubscribe from push notifications
-router.post("/unsubscribe", auth, async (req, res) => {
+router.post("/unsubscribe", auth, requireSubscription, async (req, res) => {
   try {
     const { endpoint } = req.body;
 
