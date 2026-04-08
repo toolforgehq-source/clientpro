@@ -192,6 +192,9 @@ export interface Client {
   zip?: string;
   property_type?: string;
   closing_date: string;
+  birthday?: string;
+  anniversary_date?: string;
+  spouse_name?: string;
   engagement_score: number;
   notes?: string;
   is_active: boolean;

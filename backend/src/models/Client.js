@@ -1,12 +1,12 @@
 const { query } = require("../config/database");
 
 const Client = {
-  async create({ agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, notes }) {
+  async create({ agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, birthday, anniversary_date, spouse_name, notes }) {
     const result = await query(
-      `INSERT INTO clients (agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      `INSERT INTO clients (agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, birthday, anniversary_date, spouse_name, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
        RETURNING *`,
-      [agent_id, first_name, last_name, phone_number, email || null, property_address || null, city || null, state || null, zip || null, property_type || null, closing_date, notes || null]
+      [agent_id, first_name, last_name, phone_number, email || null, property_address || null, city || null, state || null, zip || null, property_type || null, closing_date, birthday || null, anniversary_date || null, spouse_name || null, notes || null]
     );
     return result.rows[0];
   },
@@ -61,7 +61,7 @@ const Client = {
   },
 
   async update(id, fields) {
-    const allowed = ["first_name", "last_name", "phone_number", "email", "property_address", "city", "state", "zip", "property_type", "closing_date", "notes", "is_active", "engagement_score"];
+    const allowed = ["first_name", "last_name", "phone_number", "email", "property_address", "city", "state", "zip", "property_type", "closing_date", "birthday", "anniversary_date", "spouse_name", "notes", "is_active", "engagement_score"];
     const sets = [];
     const vals = [id];
     let idx = 2;

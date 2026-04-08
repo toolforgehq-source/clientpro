@@ -16,6 +16,7 @@ const personalizeMessage = (template, client, agent) => {
     .replace(/\{\{city\}\}/g, client.city || "your area")
     .replace(/\{\{state\}\}/g, client.state || "")
     .replace(/\{\{property_type\}\}/g, propertyLabel)
+    .replace(/\{\{spouse_name\}\}/g, client.spouse_name || "your spouse")
     .replace(/\{\{agent_name\}\}/g, agentFullName)
     .replace(/\{\{company_name\}\}/g, agent.company_name || "")
     .trim();
