@@ -94,6 +94,11 @@ migrateTemplates().catch((err) => {
   logger.error("Template migration failed (non-fatal):", err.message);
 });
 
+const migrateClientFields = require("./scripts/migrateClientFields");
+migrateClientFields().catch((err) => {
+  logger.error("Client fields migration failed (non-fatal):", err.message);
+});
+
 app.listen(PORT, () => {
   logger.info(`ClientPro API running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);

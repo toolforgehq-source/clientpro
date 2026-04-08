@@ -13,6 +13,8 @@ import {
   CheckCircle,
   Clock,
   UserPlus,
+  Cake,
+  Heart,
 } from "lucide-react";
 import { api, Client, Message, Referral } from "@/lib/api";
 import { useToast } from "@/components/ui/Toast";
@@ -64,6 +66,9 @@ export default function ClientDetailPage() {
     zip: "",
     property_type: "",
     closing_date: "",
+    birthday: "",
+    anniversary_date: "",
+    spouse_name: "",
     notes: "",
   });
   const [saving, setSaving] = useState(false);
@@ -90,6 +95,9 @@ export default function ClientDetailPage() {
         zip: data.client.zip || "",
         property_type: data.client.property_type || "",
         closing_date: data.client.closing_date?.split("T")[0] || "",
+        birthday: data.client.birthday?.split("T")[0] || "",
+        anniversary_date: data.client.anniversary_date?.split("T")[0] || "",
+        spouse_name: data.client.spouse_name || "",
         notes: data.client.notes || "",
       });
       setLoading(false);
@@ -103,6 +111,9 @@ export default function ClientDetailPage() {
       ...editForm,
       phone_number: toE164(editForm.phone_number),
       email: editForm.email || undefined,
+      birthday: editForm.birthday || undefined,
+      anniversary_date: editForm.anniversary_date || undefined,
+      spouse_name: editForm.spouse_name || undefined,
     });
     setSaving(false);
     if (error) {
@@ -211,6 +222,21 @@ export default function ClientDetailPage() {
                 <Calendar className="h-4 w-4 text-gray-400" />
                 Closed {formatDate(client.closing_date)}
               </div>
+              {client.birthday && (
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Cake className="h-4 w-4 text-gray-400" />
+                  Birthday {formatDate(client.birthday)}
+                </div>
+              )}
+              {client.anniversary_date && (
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Heart className="h-4 w-4 text-gray-400" />
+                  Anniversary {formatDate(client.anniversary_date)}
+                  {client.spouse_name && (
+                    <span className="text-xs text-gray-400">(w/ {client.spouse_name})</span>
+                  )}
+                </div>
+              )}
               {client.notes && (
                 <div className="flex items-start gap-2 text-gray-600">
                   <StickyNote className="h-4 w-4 text-gray-400 mt-0.5" />
@@ -407,6 +433,28 @@ export default function ClientDetailPage() {
             type="date"
             value={editForm.closing_date}
             onChange={(e) => setEditForm((f) => ({ ...f, closing_date: e.target.value }))}
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              id="edit_birthday"
+              label="Birthday"
+              type="date"
+              value={editForm.birthday}
+              onChange={(e) => setEditForm((f) => ({ ...f, birthday: e.target.value }))}
+            />
+            <Input
+              id="edit_anniversary_date"
+              label="Marriage Anniversary"
+              type="date"
+              value={editForm.anniversary_date}
+              onChange={(e) => setEditForm((f) => ({ ...f, anniversary_date: e.target.value }))}
+            />
+          </div>
+          <Input
+            id="edit_spouse_name"
+            label="Spouse / Partner Name"
+            value={editForm.spouse_name}
+            onChange={(e) => setEditForm((f) => ({ ...f, spouse_name: e.target.value }))}
           />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>

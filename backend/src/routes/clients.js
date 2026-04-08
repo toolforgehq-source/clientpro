@@ -8,7 +8,7 @@ const Referral = require("../models/Referral");
 const auth = require("../middleware/auth");
 const requireSubscription = require("../middleware/requireSubscription");
 const { checkClientLimit, TIER_LIMITS } = require("../middleware/validateTier");
-const { scheduleMessagesForClient } = require("../services/messageScheduler");
+const { scheduleMessagesForClient, scheduleRecurringMessages } = require("../services/messageScheduler");
 const { validatePhone, validatePropertyType, validatePagination } = require("../utils/validation");
 const logger = require("../utils/logger");
 
@@ -31,6 +31,9 @@ router.post(
     body("zip").optional().trim(),
     validatePropertyType(),
     body("email").optional().isEmail().normalizeEmail(),
+    body("birthday").optional({ values: "falsy" }).isISO8601().withMessage("Valid birthday date required"),
+    body("anniversary_date").optional({ values: "falsy" }).isISO8601().withMessage("Valid anniversary date required"),
+    body("spouse_name").optional().trim(),
     body("notes").optional().trim(),
   ],
   async (req, res, next) => {
@@ -47,8 +50,9 @@ router.post(
 
       const client = await Client.create({ ...req.body, agent_id: req.user.id });
       const scheduled = await scheduleMessagesForClient(client, req.user);
+      const recurring = await scheduleRecurringMessages(client, req.user);
 
-      res.status(201).json({ client, messages_scheduled: scheduled });
+      res.status(201).json({ client, messages_scheduled: scheduled + recurring });
     } catch (err) {
       next(err);
     }
@@ -103,6 +107,9 @@ router.put(
     body("zip").optional().trim(),
     validatePropertyType(),
     body("closing_date").optional().isISO8601(),
+    body("birthday").optional({ values: "falsy" }).isISO8601().withMessage("Valid birthday date required"),
+    body("anniversary_date").optional({ values: "falsy" }).isISO8601().withMessage("Valid anniversary date required"),
+    body("spouse_name").optional().trim(),
     body("notes").optional().trim(),
   ],
   async (req, res, next) => {
@@ -118,6 +125,12 @@ router.put(
       }
 
       const updated = await Client.update(req.params.id, req.body);
+
+      // Schedule recurring messages if birthday or anniversary was added/changed
+      if (req.body.birthday || req.body.anniversary_date) {
+        await scheduleRecurringMessages(updated, req.user);
+      }
+
       res.json({ client: updated });
     } catch (err) {
       next(err);
@@ -204,10 +217,14 @@ router.post("/import", auth, requireSubscription, upload.single("file"), async (
           zip: row.zip || null,
           property_type: row.property_type || null,
           email: row.email || null,
+          birthday: row.birthday || null,
+          anniversary_date: row.anniversary_date || null,
+          spouse_name: row.spouse_name || null,
           notes: row.notes || null,
         });
 
         await scheduleMessagesForClient(client, req.user);
+        await scheduleRecurringMessages(client, req.user);
         results.success_count++;
       } catch (err) {
         results.errors.push({ row: i + 1, error: err.message });

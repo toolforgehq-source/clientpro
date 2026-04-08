@@ -26,6 +26,9 @@ const schema = z.object({
   zip: z.string().optional(),
   property_type: z.string().min(1, "Property type required"),
   closing_date: z.string().min(1, "Closing date required"),
+  birthday: z.string().optional(),
+  anniversary_date: z.string().optional(),
+  spouse_name: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -59,6 +62,9 @@ export default function NewClientPage() {
       ...data,
       phone_number: toE164(data.phone_number),
       email: data.email || undefined,
+      birthday: data.birthday || undefined,
+      anniversary_date: data.anniversary_date || undefined,
+      spouse_name: data.spouse_name || undefined,
     });
     setLoading(false);
     if (error) {
@@ -195,6 +201,35 @@ export default function NewClientPage() {
               error={errors.closing_date?.message}
               {...register("closing_date")}
             />
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">Personal Details (Optional)</h2>
+            <p className="mb-4 text-sm text-gray-500">
+              Add personal dates to automatically send birthday and anniversary messages.
+            </p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  id="birthday"
+                  label="Birthday"
+                  type="date"
+                  {...register("birthday")}
+                />
+                <Input
+                  id="anniversary_date"
+                  label="Marriage Anniversary"
+                  type="date"
+                  {...register("anniversary_date")}
+                />
+              </div>
+              <Input
+                id="spouse_name"
+                label="Spouse / Partner Name"
+                placeholder="Jane"
+                {...register("spouse_name")}
+              />
+            </div>
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

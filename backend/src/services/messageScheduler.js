@@ -95,4 +95,91 @@ const backfillMessagesForAllClients = async () => {
   return totalScheduled;
 };
 
-module.exports = { scheduleMessagesForClient, backfillMessagesForAllClients };
+/**
+ * Birthday message templates — one per year for 10 years.
+ */
+const BIRTHDAY_TEMPLATES = [
+  "Happy birthday, {{first_name}}! 🎂 Hope you have an amazing day! — {{agent_name}}",
+  "Happy birthday, {{first_name}}! 🎉 Wishing you a wonderful year ahead! — {{agent_name}}",
+  "Hey {{first_name}}, happy birthday! 🎂 Hope it's a great one! — {{agent_name}}",
+];
+
+/**
+ * Anniversary message templates.
+ */
+const ANNIVERSARY_TEMPLATES = [
+  "Happy anniversary, {{first_name}} & {{spouse_name}}! 💍 Wishing you both a wonderful celebration! — {{agent_name}}",
+  "Happy anniversary, {{first_name}}! 🥂 Hope you and {{spouse_name}} have a beautiful day! — {{agent_name}}",
+  "Hey {{first_name}}, happy anniversary to you and {{spouse_name}}! 💍 Enjoy the special day! — {{agent_name}}",
+];
+
+/**
+ * Schedule recurring birthday and/or anniversary messages for a client.
+ * Creates one message per year for the next 10 years on the appropriate date.
+ * Idempotent — skips dates that already have a scheduled message.
+ */
+const scheduleRecurringMessages = async (client, agent) => {
+  if (!client.birthday && !client.anniversary_date) return 0;
+
+  // Fetch existing scheduled/sent messages for this client to avoid duplicates
+  const existing = await query(
+    `SELECT scheduled_for::date AS sched_date FROM messages
+     WHERE client_id = $1 AND status NOT IN ('cancelled', 'failed')`,
+    [client.id]
+  );
+  const existingDates = new Set(
+    existing.rows.map((r) => new Date(r.sched_date).toISOString().split("T")[0])
+  );
+
+  let scheduled = 0;
+  const now = new Date();
+  const currentYear = now.getFullYear();
+
+  const datesToSchedule = [];
+
+  if (client.birthday) {
+    const bday = new Date(client.birthday);
+    for (let y = 0; y < 10; y++) {
+      const year = currentYear + y;
+      const scheduledFor = new Date(year, bday.getMonth(), bday.getDate(), 9, 0, 0);
+      if (scheduledFor > now) {
+        const templateText = BIRTHDAY_TEMPLATES[y % BIRTHDAY_TEMPLATES.length];
+        datesToSchedule.push({ date: scheduledFor, template: templateText });
+      }
+    }
+  }
+
+  if (client.anniversary_date) {
+    const anniv = new Date(client.anniversary_date);
+    for (let y = 0; y < 10; y++) {
+      const year = currentYear + y;
+      const scheduledFor = new Date(year, anniv.getMonth(), anniv.getDate(), 9, 0, 0);
+      if (scheduledFor > now) {
+        const templateText = ANNIVERSARY_TEMPLATES[y % ANNIVERSARY_TEMPLATES.length];
+        datesToSchedule.push({ date: scheduledFor, template: templateText });
+      }
+    }
+  }
+
+  for (const { date, template } of datesToSchedule) {
+    const dateKey = date.toISOString().split("T")[0];
+    if (existingDates.has(dateKey)) continue;
+
+    const messageText = personalizeMessage(template, client, agent);
+
+    await Message.create({
+      client_id: client.id,
+      agent_id: agent.id,
+      message_text: messageText,
+      scheduled_for: date.toISOString(),
+    });
+
+    existingDates.add(dateKey);
+    scheduled++;
+  }
+
+  logger.info(`Scheduled ${scheduled} recurring messages for client ${client.id}`);
+  return scheduled;
+};
+
+module.exports = { scheduleMessagesForClient, backfillMessagesForAllClients, scheduleRecurringMessages };
