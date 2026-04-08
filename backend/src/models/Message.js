@@ -32,12 +32,16 @@ const Message = {
       params
     );
 
+    // Scheduled messages sort soonest-first (ASC) so near-term messages
+    // appear on page 1; sent/other messages sort most-recent-first (DESC)
+    const sortOrder = status === "scheduled" ? "ASC" : "DESC";
+
     const result = await query(
       `SELECT m.*, c.first_name as client_first_name, c.last_name as client_last_name, c.phone_number as client_phone
        FROM messages m
        JOIN clients c ON c.id = m.client_id
        WHERE ${whereClause}
-       ORDER BY m.scheduled_for DESC
+       ORDER BY m.scheduled_for ${sortOrder}
        LIMIT $${idx} OFFSET $${idx + 1}`,
       [...params, limit, offset]
     );

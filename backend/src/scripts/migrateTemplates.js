@@ -9,6 +9,7 @@
  */
 const { pool } = require("../config/database");
 const logger = require("../utils/logger");
+const { backfillMessagesForAllClients } = require("../services/messageScheduler");
 
 const newTemplates = [
   { name: "Week 1 Welcome", days: 7, template: "Hey {{first_name}}! Hope you're settling into {{city}} well! Let me know if you need anything. 🏡" },
@@ -44,6 +45,9 @@ async function migrateTemplates() {
 
     if (count >= 22) {
       logger.info("Migration: templates already up to date (found " + count + ")");
+      // Still backfill in case existing clients are missing messages from newer templates
+      logger.info("Migration: backfilling scheduled messages for existing clients...");
+      await backfillMessagesForAllClients();
       return;
     }
 
@@ -62,6 +66,10 @@ async function migrateTemplates() {
 
     await client.query("COMMIT");
     logger.info("Migration: templates updated to 22-message cadence over 10 years");
+
+    // Backfill scheduled messages for existing clients with the new templates
+    logger.info("Migration: backfilling scheduled messages for existing clients...");
+    await backfillMessagesForAllClients();
   } catch (err) {
     await client.query("ROLLBACK");
     logger.error("Template migration failed:", err.message);
