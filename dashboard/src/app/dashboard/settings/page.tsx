@@ -11,6 +11,7 @@ import Input from "@/components/ui/Input";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import Modal from "@/components/ui/Modal";
 import InstallInstructions from "@/components/pwa/InstallInstructions";
+import FubIntegrationCard from "@/components/integrations/FubIntegrationCard";
 import { TIER_LABELS, TIER_PRICES, TIER_CLIENT_LIMITS, formatPhone, toE164 } from "@/lib/utils";
 
 function SettingsContent() {
@@ -18,7 +19,9 @@ function SettingsContent() {
   const initialTab = searchParams.get("tab") || "profile";
   const { user, usage, updateProfile } = useAuth();
   const { toast } = useToast();
-  const [tab, setTab] = useState<"profile" | "billing" | "app">(initialTab as "profile" | "billing" | "app");
+  const [tab, setTab] = useState<"profile" | "billing" | "app" | "integrations">(
+    initialTab as "profile" | "billing" | "app" | "integrations"
+  );
 
   const [profileForm, setProfileForm] = useState({
     first_name: user?.first_name || "",
@@ -116,6 +119,14 @@ function SettingsContent() {
           Billing
         </button>
         <button
+          onClick={() => setTab("integrations")}
+          className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            tab === "integrations" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Integrations
+        </button>
+        <button
           onClick={() => setTab("app")}
           className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
             tab === "app" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
@@ -125,7 +136,11 @@ function SettingsContent() {
         </button>
       </div>
 
-      {tab === "app" ? (
+      {tab === "integrations" ? (
+        <div className="max-w-2xl space-y-8">
+          <FubIntegrationCard />
+        </div>
+      ) : tab === "app" ? (
         <div className="max-w-2xl space-y-8">
           <InstallInstructions />
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

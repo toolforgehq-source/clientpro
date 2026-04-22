@@ -263,6 +263,12 @@ router.get("/me", auth, async (req, res, next) => {
         onboarding_completed_at: user.onboarding_completed_at
           ? new Date(user.onboarding_completed_at).toISOString()
           : null,
+        fub_connected: Boolean(user.fub_connected),
+        fub_identity_name: user.fub_identity_name || null,
+        fub_last_sync_at: user.fub_last_sync_at
+          ? new Date(user.fub_last_sync_at).toISOString()
+          : null,
+        fub_last_sync_count: user.fub_last_sync_count ?? null,
       },
       usage: {
         clients_count: clientsCount,

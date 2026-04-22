@@ -27,6 +27,11 @@ CREATE TABLE IF NOT EXISTS users (
   reset_token_expires TIMESTAMPTZ,
   use_ai_personalization BOOLEAN NOT NULL DEFAULT false,
   onboarding_completed_at TIMESTAMPTZ,
+  fub_api_key_encrypted TEXT,
+  fub_identity_id BIGINT,
+  fub_identity_name TEXT,
+  fub_last_sync_at TIMESTAMPTZ,
+  fub_last_sync_count INTEGER,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -53,6 +58,7 @@ CREATE TABLE IF NOT EXISTS clients (
   spouse_name TEXT,
   notes TEXT,
   engagement_score INTEGER DEFAULT 50 CHECK (engagement_score >= 0 AND engagement_score <= 100),
+  fub_person_id BIGINT,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now(),
@@ -61,6 +67,9 @@ CREATE TABLE IF NOT EXISTS clients (
 
 CREATE INDEX IF NOT EXISTS idx_clients_agent ON clients(agent_id);
 CREATE INDEX IF NOT EXISTS idx_clients_closing_date ON clients(closing_date);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_clients_agent_fub_person
+  ON clients (agent_id, fub_person_id)
+  WHERE fub_person_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
