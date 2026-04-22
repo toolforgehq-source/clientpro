@@ -24,10 +24,6 @@ const reasons = [
   },
 ];
 
-const integrations = [
-  "CSV Import",
-];
-
 const badges = [
   { icon: Shield, label: "TCPA Compliant" },
   { icon: Lock, label: "Bank-Level Encryption" },
@@ -72,31 +68,6 @@ export default function SocialProof() {
             </motion.div>
           ))}
         </div>
-
-        {/* CRM Integrations */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-gray-100 rounded-2xl p-8 md:p-12 mb-16 text-center"
-        >
-          <h3 className="text-xl md:text-2xl font-bold text-dark mb-3">
-            Works With Your Existing Tools
-          </h3>
-          <p className="text-slate-600 mb-8 max-w-xl mx-auto">
-            Import your past clients via CSV and get started in minutes.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {integrations.map((name, i) => (
-              <div
-                key={i}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium bg-primary/10 text-primary border border-primary/20"
-              >
-                {name}
-              </div>
-            ))}
-          </div>
-        </motion.div>
 
         {/* Urgency callout */}
         <motion.div

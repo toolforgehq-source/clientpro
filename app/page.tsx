@@ -6,6 +6,8 @@ import Features from "@/components/Features";
 import ProductShowcase from "@/components/ProductShowcase";
 import ROICalculator from "@/components/ROICalculator";
 import SocialProof from "@/components/SocialProof";
+import Testimonials from "@/components/Testimonials";
+import Comparison from "@/components/Comparison";
 import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import Referral from "@/components/Referral";
@@ -158,9 +160,11 @@ export default function Home() {
         <Hero />
         <Problem />
         <Solution />
+        <Testimonials />
         <Features />
         <ProductShowcase />
         <ROICalculator />
+        <Comparison />
         <SocialProof />
         <Pricing />
         <FAQ />
