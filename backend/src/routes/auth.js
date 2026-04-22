@@ -260,6 +260,9 @@ router.get("/me", auth, async (req, res, next) => {
         user_role: user.user_role,
         use_ai_personalization: user.use_ai_personalization === true,
         ai_available: !!process.env.OPENAI_API_KEY,
+        onboarding_completed_at: user.onboarding_completed_at
+          ? new Date(user.onboarding_completed_at).toISOString()
+          : null,
       },
       usage: {
         clients_count: clientsCount,
@@ -304,6 +307,21 @@ router.put(
     }
   }
 );
+
+// Marks the agent's onboarding wizard as complete (or skipped). Idempotent —
+// once set, further calls do not overwrite the original completion timestamp.
+router.post("/onboarding/complete", auth, async (req, res, next) => {
+  try {
+    const updated = await User.markOnboardingComplete(req.user.id);
+    res.json({
+      onboarding_completed_at: updated?.onboarding_completed_at
+        ? new Date(updated.onboarding_completed_at).toISOString()
+        : null,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.post(
   "/forgot-password",

@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS users (
   reset_token TEXT,
   reset_token_expires TIMESTAMPTZ,
   use_ai_personalization BOOLEAN NOT NULL DEFAULT false,
+  onboarding_completed_at TIMESTAMPTZ,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()

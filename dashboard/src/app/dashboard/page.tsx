@@ -28,6 +28,16 @@ export default function DashboardHome() {
   const [referralCount, setReferralCount] = useState(0);
 
   useEffect(() => {
+    if (
+      user &&
+      !user.onboarding_completed_at &&
+      (usage?.clients_count ?? 0) === 0
+    ) {
+      router.replace("/dashboard/onboarding");
+    }
+  }, [user, usage?.clients_count, router]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const [messagesRes, clientsRes, referralsRes] = await Promise.all([
         api.messages.list({ status: "sent", limit: 10 }),
