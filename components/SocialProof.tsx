@@ -24,19 +24,6 @@ const reasons = [
   },
 ];
 
-// Integration roadmap shown on the landing page to preempt the #1 objection
-// ("does this work with my CRM?"). Mark items as available once the integration
-// actually ships in the backend.
-const integrations: { name: string; status: "live" | "soon" }[] = [
-  { name: "CSV Import", status: "live" },
-  { name: "Follow Up Boss", status: "soon" },
-  { name: "kvCORE", status: "soon" },
-  { name: "Chime", status: "soon" },
-  { name: "Sierra Interactive", status: "soon" },
-  { name: "LionDesk", status: "soon" },
-  { name: "MLS sync", status: "soon" },
-];
-
 const badges = [
   { icon: Shield, label: "TCPA Compliant" },
   { icon: Lock, label: "Bank-Level Encryption" },
@@ -81,42 +68,6 @@ export default function SocialProof() {
             </motion.div>
           ))}
         </div>
-
-        {/* CRM Integrations */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-gray-100 rounded-2xl p-8 md:p-12 mb-16 text-center"
-        >
-          <h3 className="text-xl md:text-2xl font-bold text-dark mb-3">
-            Works With Your Existing Tools
-          </h3>
-          <p className="text-slate-600 mb-8 max-w-xl mx-auto">
-            Import via CSV today. Native CRM integrations rolling out on a
-            weekly cadence — if you use one of these, you&rsquo;ll be
-            auto-synced soon.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {integrations.map((integration, i) => (
-              <div
-                key={i}
-                className={
-                  integration.status === "live"
-                    ? "px-5 py-2.5 rounded-lg text-sm font-medium bg-primary/10 text-primary border border-primary/20"
-                    : "px-5 py-2.5 rounded-lg text-sm font-medium bg-white text-slate-700 border border-slate-200 flex items-center gap-2"
-                }
-              >
-                <span>{integration.name}</span>
-                {integration.status === "soon" && (
-                  <span className="text-[10px] uppercase tracking-wide text-slate-400 font-semibold">
-                    soon
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </motion.div>
 
         {/* Urgency callout */}
         <motion.div
