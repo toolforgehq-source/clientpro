@@ -1,12 +1,12 @@
 const { query } = require("../config/database");
 
 const Message = {
-  async create({ client_id, agent_id, message_text, scheduled_for }) {
+  async create({ client_id, agent_id, message_text, scheduled_for, ai_generated = false }) {
     const result = await query(
-      `INSERT INTO messages (client_id, agent_id, message_text, scheduled_for)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO messages (client_id, agent_id, message_text, scheduled_for, ai_generated)
+       VALUES ($1, $2, $3, $4, COALESCE($5, false))
        RETURNING *`,
-      [client_id, agent_id, message_text, scheduled_for]
+      [client_id, agent_id, message_text, scheduled_for, ai_generated]
     );
     return result.rows[0];
   },
@@ -78,10 +78,10 @@ const Message = {
     return result.rows;
   },
 
-  async updateText(id, messageText) {
+  async updateText(id, messageText, { aiGenerated = false } = {}) {
     const result = await query(
-      "UPDATE messages SET message_text = $2, updated_at = now() WHERE id = $1 AND status = 'scheduled' RETURNING *",
-      [id, messageText]
+      "UPDATE messages SET message_text = $2, ai_generated = $3, updated_at = now() WHERE id = $1 AND status = 'scheduled' RETURNING *",
+      [id, messageText, aiGenerated]
     );
     return result.rows[0] || null;
   },

@@ -8,6 +8,7 @@
     "db:setup": "node src/scripts/setupDatabase.js",
     "db:migrate": "node -e \"require('./src/scripts/migrateConstraints')()\"",
     "stripe:setup": "node src/scripts/setupStripe.js",
+    "test:ai": "node src/services/__tests__/aiMessageGenerator.smoke.js",
     "lint": "echo 'No linter configured'"
   },
   "keywords": [],
@@ -24,6 +25,7 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",
     "node-cron": "^4.2.1",
+    "openai": "^4.104.0",
     "pg": "^8.18.0",
     "resend": "^6.9.2",
     "stripe": "^20.3.1",

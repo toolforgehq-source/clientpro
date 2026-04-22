@@ -258,6 +258,8 @@ router.get("/me", auth, async (req, res, next) => {
         subscription_status: user.subscription_status,
         twilio_phone_number: user.twilio_phone_number,
         user_role: user.user_role,
+        use_ai_personalization: user.use_ai_personalization === true,
+        ai_available: !!process.env.OPENAI_API_KEY,
       },
       usage: {
         clients_count: clientsCount,
@@ -278,6 +280,7 @@ router.put(
     body("last_name").optional().trim().notEmpty(),
     body("phone_number").optional().matches(/^\+1\d{10}$/),
     body("company_name").optional().trim(),
+    body("use_ai_personalization").optional().isBoolean(),
   ],
   async (req, res, next) => {
     try {
@@ -286,7 +289,15 @@ router.put(
         return res.status(400).json({ error: { message: "Validation failed", code: "VALIDATION", details: errors.array() } });
       }
 
-      const updated = await User.updateProfile(req.user.id, req.body);
+      const { first_name, last_name, phone_number, company_name, use_ai_personalization } = req.body;
+      const updated = await User.updateProfile(req.user.id, {
+        first_name,
+        last_name,
+        phone_number,
+        company_name,
+        use_ai_personalization:
+          use_ai_personalization === undefined ? undefined : Boolean(use_ai_personalization),
+      });
       res.json({ user: updated });
     } catch (err) {
       next(err);

@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
     CHECK (user_role IN ('agent', 'team_admin', 'broker_admin')),
   reset_token TEXT,
   reset_token_expires TIMESTAMPTZ,
+  use_ai_personalization BOOLEAN NOT NULL DEFAULT false,
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -76,6 +77,7 @@ CREATE TABLE IF NOT EXISTS messages (
   is_read BOOLEAN DEFAULT false,
   failed_reason TEXT,
   retry_count INTEGER DEFAULT 0,
+  ai_generated BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );

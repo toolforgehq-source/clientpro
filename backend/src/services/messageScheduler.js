@@ -1,7 +1,28 @@
 const { query } = require("../config/database");
 const Message = require("../models/Message");
 const { personalizeMessage } = require("./messagePersonalizer");
+const { generateAIMessage } = require("./aiMessageGenerator");
+const { getMarketContext } = require("./marketContextProvider");
 const logger = require("../utils/logger");
+
+/**
+ * Resolve the final message text for a (template, client, agent) triple.
+ *
+ * If the agent has opted into AI personalization AND an OpenAI key is
+ * configured, calls the AI generator. Otherwise — or on any AI failure —
+ * falls back to the deterministic mail-merge. Never throws.
+ */
+const resolveMessageTextForTemplate = async (template, client, agent) => {
+  if (agent.use_ai_personalization) {
+    const marketContext = getMarketContext(client);
+    const result = await generateAIMessage({ template, client, agent, marketContext });
+    return { text: result.text, ai_generated: result.ai_generated };
+  }
+  return {
+    text: personalizeMessage(template.message_template, client, agent),
+    ai_generated: false,
+  };
+};
 
 const scheduleMessagesForClient = async (client, agent) => {
   const templates = await query(
@@ -35,13 +56,14 @@ const scheduleMessagesForClient = async (client, agent) => {
       continue;
     }
 
-    const messageText = personalizeMessage(template.message_template, client, agent);
+    const { text, ai_generated } = await resolveMessageTextForTemplate(template, client, agent);
 
     await Message.create({
       client_id: client.id,
       agent_id: agent.id,
-      message_text: messageText,
+      message_text: text,
       scheduled_for: scheduledFor.toISOString(),
+      ai_generated,
     });
 
     existingDates.add(dateKey);
@@ -60,7 +82,8 @@ const scheduleMessagesForClient = async (client, agent) => {
 const backfillMessagesForAllClients = async () => {
   const clients = await query(
     `SELECT c.*, u.id AS agent_user_id, u.first_name AS agent_first_name,
-            u.last_name AS agent_last_name, u.company_name AS agent_company_name
+            u.last_name AS agent_last_name, u.company_name AS agent_company_name,
+            u.use_ai_personalization AS agent_use_ai_personalization
      FROM clients c
      JOIN users u ON u.id = c.agent_id
      WHERE c.is_active = true AND u.is_active = true AND u.subscription_status = 'active'`
@@ -85,6 +108,7 @@ const backfillMessagesForAllClients = async () => {
       first_name: row.agent_first_name,
       last_name: row.agent_last_name,
       company_name: row.agent_company_name,
+      use_ai_personalization: row.agent_use_ai_personalization === true,
     };
 
     const scheduled = await scheduleMessagesForClient(client, agent);

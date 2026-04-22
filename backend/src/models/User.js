@@ -20,18 +20,18 @@ const User = {
 
   async findById(id) {
     const result = await query(
-      "SELECT id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id, twilio_phone_number, twilio_phone_sid, parent_user_id, user_role, is_active, created_at, updated_at FROM users WHERE id = $1",
+      "SELECT id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id, twilio_phone_number, twilio_phone_sid, parent_user_id, user_role, use_ai_personalization, is_active, created_at, updated_at FROM users WHERE id = $1",
       [id]
     );
     return result.rows[0] || null;
   },
 
-  async updateProfile(id, { first_name, last_name, phone_number, company_name }) {
+  async updateProfile(id, { first_name, last_name, phone_number, company_name, use_ai_personalization }) {
     const result = await query(
-      `UPDATE users SET first_name = COALESCE($2, first_name), last_name = COALESCE($3, last_name), phone_number = COALESCE($4, phone_number), company_name = COALESCE($5, company_name), updated_at = now()
+      `UPDATE users SET first_name = COALESCE($2, first_name), last_name = COALESCE($3, last_name), phone_number = COALESCE($4, phone_number), company_name = COALESCE($5, company_name), use_ai_personalization = COALESCE($6, use_ai_personalization), updated_at = now()
        WHERE id = $1
-       RETURNING id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, user_role`,
-      [id, first_name, last_name, phone_number, company_name]
+       RETURNING id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, user_role, use_ai_personalization`,
+      [id, first_name, last_name, phone_number, company_name, use_ai_personalization]
     );
     return result.rows[0];
   },

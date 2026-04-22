@@ -99,6 +99,11 @@ migrateClientFields().catch((err) => {
   logger.error("Client fields migration failed (non-fatal):", err.message);
 });
 
+const migrateAIPersonalization = require("./scripts/migrateAIPersonalization");
+migrateAIPersonalization().catch((err) => {
+  logger.error("AI personalization migration failed (non-fatal):", err.message);
+});
+
 app.listen(PORT, () => {
   logger.info(`ClientPro API running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);
