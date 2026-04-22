@@ -27,6 +27,7 @@ function SettingsContent() {
     company_name: user?.company_name || "",
   });
   const [savingProfile, setSavingProfile] = useState(false);
+  const [savingAI, setSavingAI] = useState(false);
 
   const [passwordForm, setPasswordForm] = useState({
     current_password: "",
@@ -50,6 +51,17 @@ function SettingsContent() {
       toast("error", error);
     } else {
       toast("success", "Profile updated");
+    }
+  };
+
+  const handleAIToggle = async (next: boolean) => {
+    setSavingAI(true);
+    const error = await updateProfile({ use_ai_personalization: next });
+    setSavingAI(false);
+    if (error) {
+      toast("error", error);
+    } else {
+      toast("success", next ? "AI personalization on" : "AI personalization off");
     }
   };
 
@@ -178,6 +190,46 @@ function SettingsContent() {
               <Button loading={savingProfile} onClick={handleProfileSave}>
                 Save Changes
               </Button>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  AI-personalized messages{" "}
+                  <span className="ml-1 rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700">
+                    Beta
+                  </span>
+                </h2>
+                <p className="mt-1 text-sm text-gray-600">
+                  Rewrite scheduled messages in your voice using each client&apos;s property and
+                  local market context. Messages newly scheduled after you turn this on will use AI;
+                  existing scheduled messages stay as-is until you regenerate them.
+                </p>
+                {user?.ai_available === false && (
+                  <p className="mt-2 text-xs text-gray-500">
+                    AI personalization isn&apos;t configured on this deployment yet — toggle is
+                    safe to flip but messages will continue using the template fallback until the
+                    server has an AI key.
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => handleAIToggle(!user?.use_ai_personalization)}
+                disabled={savingAI}
+                aria-pressed={user?.use_ai_personalization === true}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                  user?.use_ai_personalization ? "bg-primary" : "bg-gray-300"
+                }`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                    user?.use_ai_personalization ? "translate-x-5" : "translate-x-0.5"
+                  }`}
+                />
+              </button>
             </div>
           </div>
 

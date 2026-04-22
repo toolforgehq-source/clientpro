@@ -126,6 +126,38 @@ export const api = {
       GET<{ replies: Message[]; total: number }>("/api/messages/replies"),
     conversation: (clientId: string) =>
       GET<{ client: { id: string; first_name: string; last_name: string; phone_number: string }; messages: Message[] }>(`/api/messages/conversation/${clientId}`),
+    previewAI: (data: {
+      client_id: string;
+      template_text?: string;
+      template_name?: string;
+      trigger_days_after_closing?: number;
+    }) =>
+      POST<{
+        preview: string;
+        mail_merge_preview: string;
+        ai_generated: boolean;
+        model: string | null;
+        fallback_reason: string | null;
+        market_context: {
+          source: string;
+          city: string;
+          state: string;
+          zip: string | null;
+          property_type_label: string;
+          years_since_closing: number;
+          quarter_change_pct: number;
+          direction: "up" | "down" | "flat";
+          median_days_on_market: number;
+          typical_equity_gain_pct: number;
+        };
+      }>("/api/messages/preview-ai", data),
+    regenerateAI: (id: string) =>
+      POST<{
+        message: Message;
+        ai_generated: boolean;
+        model: string | null;
+        fallback_reason: string | null;
+      }>(`/api/messages/${id}/regenerate-ai`),
     reply: (data: { client_id: string; message_text: string }) =>
       POST<{ message: Message }>("/api/messages/reply", data),
   },
@@ -171,6 +203,8 @@ export interface User {
   subscription_status?: string;
   twilio_phone_number?: string;
   user_role?: string;
+  use_ai_personalization?: boolean;
+  ai_available?: boolean;
 }
 
 export interface Usage {

@@ -7,6 +7,9 @@ const auth = require("../middleware/auth");
 const requireSubscription = require("../middleware/requireSubscription");
 const { validatePagination } = require("../utils/validation");
 const { getTwilioClient } = require("../config/twilio");
+const { generateAIMessage } = require("../services/aiMessageGenerator");
+const { getMarketContext } = require("../services/marketContextProvider");
+const { personalizeMessage } = require("../services/messagePersonalizer");
 const logger = require("../utils/logger");
 
 const router = Router();
@@ -216,13 +219,126 @@ router.put(
         return res.status(400).json({ error: { message: "Can only edit scheduled messages", code: "NOT_EDITABLE" } });
       }
 
-      const updated = await Message.updateText(req.params.id, req.body.message_text);
+      // Manual edits mark the message as not AI-generated — the agent's wording wins.
+      const updated = await Message.updateText(req.params.id, req.body.message_text, {
+        aiGenerated: false,
+      });
       res.json({ message: updated });
     } catch (err) {
       next(err);
     }
   }
 );
+
+// Preview an AI-personalized draft for an arbitrary (client, template) pair
+// without saving anything. Used by the dashboard's "Preview with AI" button
+// and by the onboarding wizard's first-message preview.
+router.post(
+  "/preview-ai",
+  auth,
+  requireSubscription,
+  [
+    body("client_id").trim().notEmpty().withMessage("client_id is required"),
+    body("template_text").optional().isString(),
+    body("template_name").optional().isString(),
+    body("trigger_days_after_closing").optional().isInt({ min: 0 }),
+  ],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ error: { message: "Validation failed", code: "VALIDATION", details: errors.array() } });
+      }
+
+      const { client_id, template_text, template_name, trigger_days_after_closing } = req.body;
+
+      const client = await Client.findByIdAndAgent(client_id, req.user.id);
+      if (!client) {
+        return res.status(404).json({ error: { message: "Client not found", code: "NOT_FOUND" } });
+      }
+
+      const agent = await User.findById(req.user.id);
+      if (!agent) {
+        return res.status(404).json({ error: { message: "Agent not found", code: "NOT_FOUND" } });
+      }
+
+      const fallbackTemplate =
+        "Hey {{first_name}}! Checking in — hope you're doing well in {{city}}. Let me know if you or anyone in your circle is thinking about real estate.";
+      const template = {
+        name: template_name || "Preview",
+        trigger_days_after_closing: Number.isFinite(trigger_days_after_closing)
+          ? trigger_days_after_closing
+          : 0,
+        message_template: template_text && template_text.trim() ? template_text : fallbackTemplate,
+      };
+
+      const marketContext = getMarketContext(client);
+      const result = await generateAIMessage({ template, client, agent, marketContext });
+      const mailMergePreview = personalizeMessage(template.message_template, client, agent);
+
+      res.json({
+        preview: result.text,
+        mail_merge_preview: mailMergePreview,
+        ai_generated: result.ai_generated,
+        model: result.model,
+        fallback_reason: result.fallback_reason,
+        market_context: marketContext,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// Regenerate an existing scheduled message using AI + market context and
+// save the new text in-place. Returns the updated message.
+router.post("/:id/regenerate-ai", auth, requireSubscription, async (req, res, next) => {
+  try {
+    const message = await Message.findById(req.params.id);
+    if (!message || message.agent_id !== req.user.id) {
+      return res.status(404).json({ error: { message: "Message not found", code: "NOT_FOUND" } });
+    }
+
+    if (message.status !== "scheduled") {
+      return res.status(400).json({ error: { message: "Can only regenerate scheduled messages", code: "NOT_EDITABLE" } });
+    }
+
+    const client = await Client.findByIdAndAgent(message.client_id, req.user.id);
+    if (!client) {
+      return res.status(404).json({ error: { message: "Client not found", code: "NOT_FOUND" } });
+    }
+
+    const agent = await User.findById(req.user.id);
+    if (!agent) {
+      return res.status(404).json({ error: { message: "Agent not found", code: "NOT_FOUND" } });
+    }
+
+    // Use the existing message text as the template intent. We don't track
+    // which template row produced a scheduled message, so the current text
+    // is the best signal of what the agent wants this message to say.
+    const template = {
+      name: "Scheduled",
+      trigger_days_after_closing: 0,
+      message_template: message.message_text,
+    };
+
+    const marketContext = getMarketContext(client);
+    const result = await generateAIMessage({ template, client, agent, marketContext });
+
+    const updated = await Message.updateText(req.params.id, result.text, {
+      aiGenerated: result.ai_generated,
+    });
+
+    res.json({
+      message: updated,
+      ai_generated: result.ai_generated,
+      model: result.model,
+      fallback_reason: result.fallback_reason,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.put("/:id/read", auth, requireSubscription, async (req, res, next) => {
   try {
