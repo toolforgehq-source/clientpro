@@ -20,7 +20,15 @@ const User = {
 
   async findById(id) {
     const result = await query(
-      "SELECT id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id, twilio_phone_number, twilio_phone_sid, parent_user_id, user_role, use_ai_personalization, onboarding_completed_at, is_active, created_at, updated_at FROM users WHERE id = $1",
+      `SELECT id, email, first_name, last_name, phone_number, company_name,
+              subscription_tier, subscription_status, stripe_customer_id,
+              stripe_subscription_id, twilio_phone_number, twilio_phone_sid,
+              parent_user_id, user_role, use_ai_personalization,
+              onboarding_completed_at, fub_identity_id, fub_identity_name,
+              fub_last_sync_at, fub_last_sync_count,
+              (fub_api_key_encrypted IS NOT NULL) AS fub_connected,
+              is_active, created_at, updated_at
+         FROM users WHERE id = $1`,
       [id]
     );
     return result.rows[0] || null;
@@ -104,6 +112,61 @@ const User = {
 
   async findByStripeCustomerId(stripeCustomerId) {
     const result = await query("SELECT * FROM users WHERE stripe_customer_id = $1", [stripeCustomerId]);
+    return result.rows[0] || null;
+  },
+
+  // --- Follow Up Boss integration ----------------------------------------
+
+  async getFubApiKeyEncrypted(id) {
+    const result = await query(
+      "SELECT fub_api_key_encrypted FROM users WHERE id = $1",
+      [id]
+    );
+    return result.rows[0]?.fub_api_key_encrypted || null;
+  },
+
+  async setFubConnection(id, { encryptedKey, identityId, identityName }) {
+    const result = await query(
+      `UPDATE users
+         SET fub_api_key_encrypted = $2,
+             fub_identity_id = $3,
+             fub_identity_name = $4,
+             updated_at = now()
+       WHERE id = $1
+       RETURNING id, fub_identity_id, fub_identity_name,
+                 fub_last_sync_at, fub_last_sync_count,
+                 (fub_api_key_encrypted IS NOT NULL) AS fub_connected`,
+      [id, encryptedKey, identityId, identityName]
+    );
+    return result.rows[0] || null;
+  },
+
+  async clearFubConnection(id) {
+    const result = await query(
+      `UPDATE users
+         SET fub_api_key_encrypted = NULL,
+             fub_identity_id = NULL,
+             fub_identity_name = NULL,
+             fub_last_sync_at = NULL,
+             fub_last_sync_count = NULL,
+             updated_at = now()
+       WHERE id = $1
+       RETURNING id`,
+      [id]
+    );
+    return result.rows[0] || null;
+  },
+
+  async recordFubSync(id, count) {
+    const result = await query(
+      `UPDATE users
+         SET fub_last_sync_at = now(),
+             fub_last_sync_count = $2,
+             updated_at = now()
+       WHERE id = $1
+       RETURNING id, fub_last_sync_at, fub_last_sync_count`,
+      [id, count]
+    );
     return result.rows[0] || null;
   },
 

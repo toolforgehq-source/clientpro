@@ -16,6 +16,7 @@ const analyticsRoutes = require("./routes/analytics");
 const twilioRoutes = require("./routes/twilio");
 const contactRoutes = require("./routes/contact");
 const pushRoutes = require("./routes/push");
+const fubRoutes = require("./routes/fub");
 
 const sendScheduledMessages = require("./jobs/sendScheduledMessages");
 const updateEngagementScores = require("./jobs/updateEngagementScores");
@@ -64,6 +65,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/twilio", twilioRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/push", pushRoutes);
+app.use("/api/fub", fubRoutes);
 
 app.use(errorHandler);
 
@@ -107,6 +109,11 @@ migrateAIPersonalization().catch((err) => {
 const migrateOnboarding = require("./scripts/migrateOnboarding");
 migrateOnboarding().catch((err) => {
   logger.error("Onboarding migration failed (non-fatal):", err.message);
+});
+
+const migrateFubIntegration = require("./scripts/migrateFubIntegration");
+migrateFubIntegration().catch((err) => {
+  logger.error("FUB integration migration failed (non-fatal):", err.message);
 });
 
 app.listen(PORT, () => {

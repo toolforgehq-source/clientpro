@@ -1,14 +1,23 @@
 const { query } = require("../config/database");
 
 const Client = {
-  async create({ agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, birthday, anniversary_date, spouse_name, notes }) {
+  async create({ agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, birthday, anniversary_date, spouse_name, notes, fub_person_id }) {
     const result = await query(
-      `INSERT INTO clients (agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, birthday, anniversary_date, spouse_name, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      `INSERT INTO clients (agent_id, first_name, last_name, phone_number, email, property_address, city, state, zip, property_type, closing_date, birthday, anniversary_date, spouse_name, notes, fub_person_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
        RETURNING *`,
-      [agent_id, first_name, last_name, phone_number, email || null, property_address || null, city || null, state || null, zip || null, property_type || null, closing_date, birthday || null, anniversary_date || null, spouse_name || null, notes || null]
+      [agent_id, first_name, last_name, phone_number, email || null, property_address || null, city || null, state || null, zip || null, property_type || null, closing_date, birthday || null, anniversary_date || null, spouse_name || null, notes || null, fub_person_id || null]
     );
     return result.rows[0];
+  },
+
+  async findByFubPersonId(agentId, fubPersonId) {
+    if (fubPersonId == null) return null;
+    const result = await query(
+      "SELECT * FROM clients WHERE agent_id = $1 AND fub_person_id = $2",
+      [agentId, fubPersonId]
+    );
+    return result.rows[0] || null;
   },
 
   async findById(id) {

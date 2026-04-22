@@ -185,6 +185,15 @@ export const api = {
   analytics: {
     dashboard: () => GET<AnalyticsData>("/api/analytics/dashboard"),
   },
+  fub: {
+    status: () => GET<FubStatus>("/api/fub/status"),
+    connect: (data: { api_key: string }) => POST<FubStatus>("/api/fub/connect", data),
+    disconnect: () => DELETE<FubStatus>("/api/fub/disconnect"),
+    preview: () =>
+      GET<{ total: number; sample_size: number; people: FubPreviewPerson[] }>("/api/fub/preview"),
+    import: (data?: { limit?: number; default_closing_date?: string }) =>
+      POST<FubImportResult>("/api/fub/import", data || {}),
+  },
   team: {
     members: () => GET<{ members: TeamMember[] }>("/api/team/members"),
     invite: (data: { email: string; role: string }) =>
@@ -208,6 +217,41 @@ export interface User {
   use_ai_personalization?: boolean;
   ai_available?: boolean;
   onboarding_completed_at?: string | null;
+  fub_connected?: boolean;
+  fub_identity_name?: string | null;
+  fub_last_sync_at?: string | null;
+  fub_last_sync_count?: number | null;
+}
+
+export interface FubStatus {
+  connected: boolean;
+  identity: { id: number | null; name: string | null } | null;
+  last_sync_at: string | null;
+  last_sync_count: number | null;
+}
+
+export interface FubPreviewPerson {
+  fub_person_id: number | null;
+  ok: boolean;
+  reason: string | null;
+  client: {
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    city: string | null;
+    state: string | null;
+  } | null;
+}
+
+export interface FubImportResult {
+  requested: number;
+  considered: number;
+  imported: number;
+  skipped_duplicates: number;
+  skipped_invalid: number;
+  errors: { fub_person_id: number | null; reason: string }[];
+  fub_fetched: number;
+  capped_by_tier: boolean;
 }
 
 export interface Usage {
