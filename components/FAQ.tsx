@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 const faqs = [
   {
@@ -48,8 +46,6 @@ const faqs = [
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
   return (
     <section id="faq" className="py-12 md:py-20 bg-white">
       <div className="max-w-container mx-auto px-6">
@@ -57,46 +53,41 @@ export default function FAQ() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark text-center mb-16"
+          className="text-3xl md:text-4xl lg:text-5xl font-bold text-dark text-center mb-4"
         >
           Frequently Asked Questions
         </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center text-slate-500 mb-12 md:mb-16 max-w-2xl mx-auto"
+        >
+          Everything agents ask before signing up. If something isn&rsquo;t
+          here, email{" "}
+          <a
+            href="mailto:support@clientpro.io"
+            className="underline hover:text-primary"
+          >
+            support@clientpro.io
+          </a>
+          .
+        </motion.p>
 
-        <div className="max-w-3xl mx-auto space-y-3">
+        <div className="max-w-3xl mx-auto grid gap-4 md:grid-cols-2">
           {faqs.map((faq, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="border border-slate-200 rounded-xl overflow-hidden"
+              transition={{ delay: i * 0.03 }}
+              className="border border-slate-200 rounded-xl p-5 bg-white hover:shadow-sm transition-shadow"
             >
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-100/50 transition-colors"
-              >
-                <span className="font-semibold text-dark pr-4">{faq.q}</span>
-                <ChevronDown
-                  className={`w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-200 ${
-                    openIndex === i ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-              <AnimatePresence>
-                {openIndex === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <p className="px-5 pb-5 text-slate-600 leading-relaxed">
-                      {faq.a}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <h3 className="font-semibold text-dark mb-2">{faq.q}</h3>
+              <p className="text-slate-600 leading-relaxed text-sm">
+                {faq.a}
+              </p>
             </motion.div>
           ))}
         </div>

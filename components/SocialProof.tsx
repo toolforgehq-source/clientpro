@@ -24,8 +24,17 @@ const reasons = [
   },
 ];
 
-const integrations = [
-  "CSV Import",
+// Integration roadmap shown on the landing page to preempt the #1 objection
+// ("does this work with my CRM?"). Mark items as available once the integration
+// actually ships in the backend.
+const integrations: { name: string; status: "live" | "soon" }[] = [
+  { name: "CSV Import", status: "live" },
+  { name: "Follow Up Boss", status: "soon" },
+  { name: "kvCORE", status: "soon" },
+  { name: "Chime", status: "soon" },
+  { name: "Sierra Interactive", status: "soon" },
+  { name: "LionDesk", status: "soon" },
+  { name: "MLS sync", status: "soon" },
 ];
 
 const badges = [
@@ -84,15 +93,26 @@ export default function SocialProof() {
             Works With Your Existing Tools
           </h3>
           <p className="text-slate-600 mb-8 max-w-xl mx-auto">
-            Import your past clients via CSV and get started in minutes.
+            Import via CSV today. Native CRM integrations rolling out on a
+            weekly cadence — if you use one of these, you&rsquo;ll be
+            auto-synced soon.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {integrations.map((name, i) => (
+          <div className="flex flex-wrap justify-center gap-3">
+            {integrations.map((integration, i) => (
               <div
                 key={i}
-                className="px-5 py-2.5 rounded-lg text-sm font-medium bg-primary/10 text-primary border border-primary/20"
+                className={
+                  integration.status === "live"
+                    ? "px-5 py-2.5 rounded-lg text-sm font-medium bg-primary/10 text-primary border border-primary/20"
+                    : "px-5 py-2.5 rounded-lg text-sm font-medium bg-white text-slate-700 border border-slate-200 flex items-center gap-2"
+                }
               >
-                {name}
+                <span>{integration.name}</span>
+                {integration.status === "soon" && (
+                  <span className="text-[10px] uppercase tracking-wide text-slate-400 font-semibold">
+                    soon
+                  </span>
+                )}
               </div>
             ))}
           </div>
