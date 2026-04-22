@@ -93,6 +93,8 @@ export const api = {
       POST<{ token: string; user: User }>("/api/auth/login", data),
     me: () => GET<{ user: User; usage: Usage }>("/api/auth/me"),
     updateProfile: (data: Partial<User>) => PUT<{ user: User }>("/api/auth/profile", data),
+    completeOnboarding: () =>
+      POST<{ onboarding_completed_at: string | null }>("/api/auth/onboarding/complete"),
     forgotPassword: (data: { email: string }) =>
       POST<{ message: string }>("/api/auth/forgot-password", data),
     resetPassword: (data: { token: string; new_password: string }) =>
@@ -205,6 +207,7 @@ export interface User {
   user_role?: string;
   use_ai_personalization?: boolean;
   ai_available?: boolean;
+  onboarding_completed_at?: string | null;
 }
 
 export interface Usage {

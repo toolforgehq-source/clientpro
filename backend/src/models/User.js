@@ -20,7 +20,17 @@ const User = {
 
   async findById(id) {
     const result = await query(
-      "SELECT id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id, twilio_phone_number, twilio_phone_sid, parent_user_id, user_role, use_ai_personalization, is_active, created_at, updated_at FROM users WHERE id = $1",
+      "SELECT id, email, first_name, last_name, phone_number, company_name, subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id, twilio_phone_number, twilio_phone_sid, parent_user_id, user_role, use_ai_personalization, onboarding_completed_at, is_active, created_at, updated_at FROM users WHERE id = $1",
+      [id]
+    );
+    return result.rows[0] || null;
+  },
+
+  async markOnboardingComplete(id) {
+    const result = await query(
+      `UPDATE users SET onboarding_completed_at = COALESCE(onboarding_completed_at, now()), updated_at = now()
+       WHERE id = $1
+       RETURNING id, onboarding_completed_at`,
       [id]
     );
     return result.rows[0] || null;
