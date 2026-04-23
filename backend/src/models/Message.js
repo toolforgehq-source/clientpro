@@ -157,10 +157,27 @@ const Message = {
   },
 
   async markReplied(id, replyText) {
-    await query(
-      "UPDATE messages SET status = 'replied', reply_text = $2, reply_at = now(), is_read = false, updated_at = now() WHERE id = $1",
+    const result = await query(
+      "UPDATE messages SET status = 'replied', reply_text = $2, reply_at = now(), is_read = false, reply_intent = NULL, reply_intent_confidence = NULL, reply_intent_reason = NULL, reply_draft_response = NULL, reply_classified_at = NULL, updated_at = now() WHERE id = $1 RETURNING *",
       [id, replyText]
     );
+    return result.rows[0] || null;
+  },
+
+  async saveReplyClassification(id, { intent, confidence, reason, draftReply }) {
+    const result = await query(
+      `UPDATE messages
+       SET reply_intent = $2,
+           reply_intent_confidence = $3,
+           reply_intent_reason = $4,
+           reply_draft_response = $5,
+           reply_classified_at = now(),
+           updated_at = now()
+       WHERE id = $1
+       RETURNING *`,
+      [id, intent, confidence, reason, draftReply]
+    );
+    return result.rows[0] || null;
   },
 
   async findRecentSentToClient(clientId) {

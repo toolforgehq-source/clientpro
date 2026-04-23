@@ -116,6 +116,11 @@ migrateFubIntegration().catch((err) => {
   logger.error("FUB integration migration failed (non-fatal):", err.message);
 });
 
+const migrateReplyIntent = require("./scripts/migrateReplyIntent");
+migrateReplyIntent().catch((err) => {
+  logger.error("Reply-intent migration failed (non-fatal):", err.message);
+});
+
 app.listen(PORT, () => {
   logger.info(`ClientPro API running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);

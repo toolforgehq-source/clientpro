@@ -4,6 +4,7 @@ const Message = require("../models/Message");
 const { getTwilioClient } = require("../config/twilio");
 const { sendReplyNotificationEmail } = require("./emailService");
 const { notifyNewReply } = require("./pushService");
+const { classifyReply } = require("./replyIntentClassifier");
 const logger = require("../utils/logger");
 
 const STOP_KEYWORDS = ["stop", "unsubscribe", "cancel", "quit", "end"];
@@ -33,12 +34,40 @@ const handleIncomingSMS = async ({ From, To, Body, MessageSid }) => {
   }
 
   const recentMessage = await Message.findRecentSentToClient(client.id);
+  let repliedMessageId = null;
   if (recentMessage) {
-    await Message.markReplied(recentMessage.id, Body);
+    const replied = await Message.markReplied(recentMessage.id, Body);
+    repliedMessageId = replied?.id || recentMessage.id;
   }
 
   const newScore = Math.min(100, (client.engagement_score || 50) + 10);
   await Client.updateEngagementScore(client.id, newScore);
+
+  // Classify the reply so the agent inbox can prioritize it. We never let
+  // classification failures break the webhook — `classifyReply` itself
+  // never throws, but wrap the save path in try/catch anyway.
+  if (repliedMessageId) {
+    try {
+      const lastAgentMessage = recentMessage?.message_text || null;
+      const classification = await classifyReply({
+        replyText: Body,
+        client,
+        agent,
+        lastAgentMessage,
+      });
+      await Message.saveReplyClassification(repliedMessageId, {
+        intent: classification.intent,
+        confidence: classification.confidence,
+        reason: classification.reason,
+        draftReply: classification.draft_reply,
+      });
+      logger.info(
+        `Reply ${repliedMessageId} classified as ${classification.intent} (${classification.ai_used ? "ai" : "heuristic"})`
+      );
+    } catch (classifyErr) {
+      logger.error(`Reply classification persist failed for ${repliedMessageId}:`, classifyErr.message);
+    }
+  }
 
   const twilioClient = getTwilioClient();
   if (twilioClient && agent.phone_number) {

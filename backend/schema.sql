@@ -85,6 +85,11 @@ CREATE TABLE IF NOT EXISTS messages (
   reply_text TEXT,
   reply_at TIMESTAMPTZ,
   is_read BOOLEAN DEFAULT false,
+  reply_intent TEXT,
+  reply_intent_confidence REAL,
+  reply_intent_reason TEXT,
+  reply_draft_response TEXT,
+  reply_classified_at TIMESTAMPTZ,
   failed_reason TEXT,
   retry_count INTEGER DEFAULT 0,
   ai_generated BOOLEAN NOT NULL DEFAULT false,
@@ -95,6 +100,9 @@ CREATE TABLE IF NOT EXISTS messages (
 CREATE INDEX IF NOT EXISTS idx_messages_client ON messages(client_id);
 CREATE INDEX IF NOT EXISTS idx_messages_scheduled ON messages(scheduled_for);
 CREATE INDEX IF NOT EXISTS idx_messages_status ON messages(status);
+CREATE INDEX IF NOT EXISTS idx_messages_reply_intent
+  ON messages (agent_id, reply_intent)
+  WHERE status = 'replied';
 
 -- Referrals
 CREATE TABLE IF NOT EXISTS referrals (

@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MessageSquare, Clock, CheckCircle, MessageCircle, Send } from "lucide-react";
-import { api, Message } from "@/lib/api";
+import { api, Message, ReplyIntent, ReplyIntentCounts } from "@/lib/api";
 import { useToast } from "@/components/ui/Toast";
 import Header from "@/components/dashboard/Header";
 import Button from "@/components/ui/Button";
@@ -13,6 +13,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EmptyState from "@/components/ui/EmptyState";
 import CustomMessageModal from "@/components/dashboard/CustomMessageModal";
 import ConversationThread from "@/components/dashboard/ConversationThread";
+import ReplyIntentBadge, { INTENT_ORDER } from "@/components/dashboard/ReplyIntentBadge";
 import { formatDate, formatRelativeDate, getStatusColor } from "@/lib/utils";
 
 interface ConversationPreview {
@@ -23,7 +24,28 @@ interface ConversationPreview {
   latest_reply_at: string;
   has_unread: boolean;
   reply_count: number;
+  latest_intent: ReplyIntent | null;
+  latest_confidence: number | null;
 }
+
+const INTENT_FILTER_LABELS: Record<ReplyIntent, string> = {
+  hot: "Hot",
+  question: "Questions",
+  warm: "Warm",
+  cold: "Cold",
+  negative: "Negative",
+  unknown: "Unclassified",
+};
+
+// Rank intents so the most-actionable conversation floats to the top.
+const INTENT_PRIORITY: Record<string, number> = {
+  hot: 6,
+  question: 5,
+  negative: 4,
+  warm: 3,
+  cold: 2,
+  unknown: 1,
+};
 
 function MessagesContent() {
   const router = useRouter();
@@ -44,12 +66,20 @@ function MessagesContent() {
   const [customMessageOpen, setCustomMessageOpen] = useState(false);
   const [conversations, setConversations] = useState<ConversationPreview[]>([]);
   const [activeConversation, setActiveConversation] = useState<string | null>(null);
+  const [intentFilter, setIntentFilter] = useState<ReplyIntent | null>(null);
+  const [intentCounts, setIntentCounts] = useState<ReplyIntentCounts | null>(null);
 
   const fetchMessages = useCallback(async () => {
     setLoading(true);
     if (tab === "replies") {
-      const { data } = await api.messages.replies();
+      const { data } = await api.messages.replies(
+        intentFilter ? { intent: intentFilter } : undefined
+      );
       if (data) {
+        setIntentCounts(data.counts);
+        // API returns replies newest-first. Walking in that order means the
+        // first time we see a client is the most recent reply, which is what
+        // we want to display and sort on.
         const clientMap = new Map<string, ConversationPreview>();
         for (const msg of data.replies) {
           const key = msg.client_id;
@@ -63,13 +93,24 @@ function MessagesContent() {
               latest_reply_at: msg.reply_at || "",
               has_unread: !msg.is_read,
               reply_count: 1,
+              latest_intent: (msg.reply_intent as ReplyIntent | null) || null,
+              latest_confidence: msg.reply_intent_confidence ?? null,
             });
           } else {
             existing.reply_count++;
             if (!msg.is_read) existing.has_unread = true;
           }
         }
-        setConversations(Array.from(clientMap.values()));
+        const sorted = Array.from(clientMap.values()).sort((a, b) => {
+          const ap = a.latest_intent ? INTENT_PRIORITY[a.latest_intent] || 0 : 0;
+          const bp = b.latest_intent ? INTENT_PRIORITY[b.latest_intent] || 0 : 0;
+          if (ap !== bp) return bp - ap;
+          return (
+            new Date(b.latest_reply_at || 0).getTime() -
+            new Date(a.latest_reply_at || 0).getTime()
+          );
+        });
+        setConversations(sorted);
       }
       setLoading(false);
     } else {
@@ -83,12 +124,20 @@ function MessagesContent() {
       }
       setLoading(false);
     }
-  }, [tab]);
+  }, [tab, intentFilter]);
 
   useEffect(() => {
     setActiveConversation(null);
     fetchMessages();
   }, [fetchMessages]);
+
+  // Reset intent filter when leaving the replies tab so it doesn't stick
+  // silently when the user comes back to replies from upcoming/sent.
+  useEffect(() => {
+    if (tab !== "replies" && intentFilter !== null) {
+      setIntentFilter(null);
+    }
+  }, [tab, intentFilter]);
 
   const handleSave = async () => {
     if (!editModal) return;
@@ -196,51 +245,111 @@ function MessagesContent() {
               }}
             />
           </div>
-        ) : conversations.length === 0 ? (
-          <div className="rounded-xl border border-gray-200 bg-white p-8">
-            <EmptyState
-              icon={<MessageCircle className="h-16 w-16" />}
-              title="No replies yet"
-              description="When clients reply to your messages, conversations will appear here. You can reply back directly from the dashboard."
-            />
-          </div>
         ) : (
-          <div className="space-y-2">
-            {conversations.map((convo) => (
-              <button
-                key={convo.client_id}
-                onClick={() => setActiveConversation(convo.client_id)}
-                className="w-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-left hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                    {convo.client_first_name[0]}{convo.client_last_name[0]}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-900">
-                        {convo.client_first_name} {convo.client_last_name}
+          <>
+            {intentCounts && intentCounts.total > 0 && (
+              <div className="mb-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIntentFilter(null)}
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                    intentFilter === null
+                      ? "bg-gray-900 text-white"
+                      : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  All
+                  <span className="rounded-full bg-black/10 px-1.5 py-0.5 text-[10px]">
+                    {intentCounts.total}
+                  </span>
+                </button>
+                {INTENT_ORDER.map((intent) => {
+                  const count = intentCounts[intent as keyof ReplyIntentCounts] as number;
+                  if (!count) return null;
+                  const active = intentFilter === intent;
+                  return (
+                    <button
+                      key={intent}
+                      type="button"
+                      onClick={() => setIntentFilter(intent)}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                        active
+                          ? "bg-gray-900 text-white"
+                          : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                      }`}
+                    >
+                      {INTENT_FILTER_LABELS[intent]}
+                      <span className="rounded-full bg-black/10 px-1.5 py-0.5 text-[10px]">
+                        {count}
                       </span>
-                      <span className="text-xs text-gray-400">
-                        {convo.latest_reply_at ? formatRelativeDate(convo.latest_reply_at) : ""}
-                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {conversations.length === 0 ? (
+              <div className="rounded-xl border border-gray-200 bg-white p-8">
+                <EmptyState
+                  icon={<MessageCircle className="h-16 w-16" />}
+                  title={
+                    intentFilter
+                      ? `No ${INTENT_FILTER_LABELS[intentFilter].toLowerCase()} replies`
+                      : "No replies yet"
+                  }
+                  description={
+                    intentFilter
+                      ? "Try a different filter or clear it to see all conversations."
+                      : "When clients reply to your messages, conversations will appear here. You can reply back directly from the dashboard."
+                  }
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {conversations.map((convo) => (
+                  <button
+                    key={convo.client_id}
+                    onClick={() => setActiveConversation(convo.client_id)}
+                    className="w-full rounded-xl border border-gray-200 bg-white p-4 shadow-sm text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                        {convo.client_first_name[0]}{convo.client_last_name[0]}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-sm font-semibold text-gray-900 truncate">
+                              {convo.client_first_name} {convo.client_last_name}
+                            </span>
+                            <ReplyIntentBadge
+                              intent={convo.latest_intent}
+                              confidence={convo.latest_confidence}
+                              size="xs"
+                            />
+                          </div>
+                          <span className="text-xs text-gray-400 shrink-0">
+                            {convo.latest_reply_at ? formatRelativeDate(convo.latest_reply_at) : ""}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 text-sm text-gray-500 truncate">
+                          {convo.latest_reply_text}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {convo.has_unread && (
+                          <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                        )}
+                        {convo.reply_count > 1 && (
+                          <Badge className="bg-gray-100 text-gray-600">{convo.reply_count}</Badge>
+                        )}
+                      </div>
                     </div>
-                    <p className="mt-0.5 text-sm text-gray-500 truncate">
-                      {convo.latest_reply_text}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    {convo.has_unread && (
-                      <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-                    )}
-                    {convo.reply_count > 1 && (
-                      <Badge className="bg-gray-100 text-gray-600">{convo.reply_count}</Badge>
-                    )}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         )
       ) : (tab === "upcoming" || tab === "sent") && messages.length === 0 ? (
         <div className="rounded-xl border border-gray-200 bg-white p-8">

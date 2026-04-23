@@ -10,6 +10,7 @@ const { getTwilioClient } = require("../config/twilio");
 const { generateAIMessage } = require("../services/aiMessageGenerator");
 const { getMarketContext } = require("../services/marketContextProvider");
 const { personalizeMessage } = require("../services/messagePersonalizer");
+const { classifyReply, INTENTS } = require("../services/replyIntentClassifier");
 const logger = require("../utils/logger");
 
 const router = Router();
@@ -108,8 +109,74 @@ router.get("/upcoming", auth, requireSubscription, async (req, res, next) => {
 
 router.get("/replies", auth, requireSubscription, async (req, res, next) => {
   try {
-    const replies = await Message.findAllReplies(req.user.id);
-    res.json({ replies, total: replies.length });
+    const { intent } = req.query;
+    const requestedIntent = typeof intent === "string" && INTENTS.includes(intent) ? intent : null;
+    const all = await Message.findAllReplies(req.user.id);
+    const replies = requestedIntent
+      ? all.filter((m) => m.reply_intent === requestedIntent)
+      : all;
+
+    const counts = { total: all.length };
+    for (const id of INTENTS) counts[id] = 0;
+    counts.unclassified = 0;
+    for (const m of all) {
+      if (m.reply_intent && counts[m.reply_intent] !== undefined) counts[m.reply_intent]++;
+      else counts.unclassified++;
+    }
+
+    res.json({
+      replies,
+      total: replies.length,
+      counts,
+      intents: INTENTS,
+      filter: requestedIntent,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/reply/:messageId/reclassify", auth, requireSubscription, async (req, res, next) => {
+  try {
+    const message = await Message.findById(req.params.messageId);
+    if (!message || message.agent_id !== req.user.id) {
+      return res.status(404).json({ error: { message: "Message not found", code: "NOT_FOUND" } });
+    }
+    if (message.status !== "replied" || !message.reply_text) {
+      return res.status(400).json({ error: { message: "Message has no reply to classify", code: "NO_REPLY" } });
+    }
+
+    const [client, agent] = await Promise.all([
+      Client.findByIdAndAgent(message.client_id, req.user.id),
+      User.findById(req.user.id),
+    ]);
+
+    const classification = await classifyReply({
+      replyText: message.reply_text,
+      client,
+      agent,
+      lastAgentMessage: message.message_text,
+    });
+
+    const updated = await Message.saveReplyClassification(message.id, {
+      intent: classification.intent,
+      confidence: classification.confidence,
+      reason: classification.reason,
+      draftReply: classification.draft_reply,
+    });
+
+    res.json({
+      message: updated,
+      classification: {
+        intent: classification.intent,
+        confidence: classification.confidence,
+        reason: classification.reason,
+        draft_reply: classification.draft_reply,
+        ai_used: classification.ai_used,
+        model: classification.model,
+        fallback_reason: classification.fallback_reason,
+      },
+    });
   } catch (err) {
     next(err);
   }
