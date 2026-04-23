@@ -124,8 +124,27 @@ export const api = {
     cancel: (id: string) => DELETE<{ message: string }>(`/api/messages/${id}`),
     sendCustom: (data: { message_text: string; client_ids?: string[]; send_to_all?: boolean }) =>
       POST<{ message: string; count: number }>("/api/messages/custom", data),
-    replies: () =>
-      GET<{ replies: Message[]; total: number }>("/api/messages/replies"),
+    replies: (params?: { intent?: ReplyIntent }) =>
+      GET<{
+        replies: Message[];
+        total: number;
+        counts: ReplyIntentCounts;
+        intents: ReplyIntent[];
+        filter: ReplyIntent | null;
+      }>("/api/messages/replies", params as Record<string, string>),
+    reclassifyReply: (messageId: string) =>
+      POST<{
+        message: Message;
+        classification: {
+          intent: ReplyIntent;
+          confidence: number;
+          reason: string;
+          draft_reply: string | null;
+          ai_used: boolean;
+          model: string | null;
+          fallback_reason: string | null;
+        };
+      }>(`/api/messages/reply/${messageId}/reclassify`),
     conversation: (clientId: string) =>
       GET<{ client: { id: string; first_name: string; last_name: string; phone_number: string }; messages: Message[] }>(`/api/messages/conversation/${clientId}`),
     previewAI: (data: {
@@ -282,6 +301,8 @@ export interface Client {
   created_at: string;
 }
 
+export type ReplyIntent = "hot" | "question" | "warm" | "cold" | "negative" | "unknown";
+
 export interface Message {
   id: string;
   client_id: string;
@@ -297,6 +318,22 @@ export interface Message {
   reply_text?: string;
   reply_at?: string;
   is_read?: boolean;
+  reply_intent?: ReplyIntent | null;
+  reply_intent_confidence?: number | null;
+  reply_intent_reason?: string | null;
+  reply_draft_response?: string | null;
+  reply_classified_at?: string | null;
+}
+
+export interface ReplyIntentCounts {
+  total: number;
+  hot: number;
+  question: number;
+  warm: number;
+  cold: number;
+  negative: number;
+  unknown: number;
+  unclassified: number;
 }
 
 export interface Referral {
